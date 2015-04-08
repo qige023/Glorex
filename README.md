@@ -1,11 +1,14 @@
 OpenGL ES 3.0 Programming On Android
 ===============================
 
-This repository contains the sample code for learning opengl ES 3.0
+This repository contains the sample code for learning opengl ES 3.0.
 
-It use framwork code from the OpenGL ES 3.0 Programming Guide by Addison-Wesley Professional (http://www.opengles-book.com).
+It use framwork code from the OpenGL ES 3.0 Programming Guide by Addison-Wesley Professional.
 
-Examples are inspired by OpenGL ES 3.0 Programming Guide and Nehe OpenGL's Lesson
+Examples are inspired by OpenGL ES 3.0 Programming Guide(http://www.opengles-book.com) and Nehe OpenGL's Lesson (http://nehe.gamedev.net/)
+
+## Sample ##
+to be add..
 
 ## Platforms ##
 The sample code for the OpenGL ES 3.0 Programming Guide currently builds on the following platforms:
@@ -15,7 +18,10 @@ The sample code for the OpenGL ES 3.0 Programming Guide currently builds on the 
 
 API Level 18+ on Android 4.3+
 
-Instructions for building for each platform are provided in Chapter 16, "OpenGL ES Platforms".
+## Builds ##
+need Android sdk & ndk installed
+need Android Studio 1.1.0 newly and import gradle project, build and enjoy
+to be add..
 
 ## Authors ##
 vicky yuqi.fan@foxmail.com
