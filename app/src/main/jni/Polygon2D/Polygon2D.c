@@ -29,6 +29,9 @@
 
 typedef struct
 {
+   // Uniform locations
+   GLint  mvpLoc;
+
    // Handle to a program object
    GLuint programObject;
 
@@ -37,6 +40,9 @@ typedef struct
 
    // Texture handle
    GLuint textureId;
+
+   // MVP matrix
+   ESMatrix  mvpMatrix;
 
 } UserData;
 
@@ -50,10 +56,11 @@ int Init ( ESContext *esContext )
       "#version 300 es                            \n"
       "layout(location = 0) in vec4 a_position;   \n"
       "layout(location = 1) in vec4 a_color;      \n"
+      "uniform mat4 u_mvpMatrix;                  \n"
       "out vec4 color;                            \n"
       "void main()                                \n"
       "{                                          \n"
-      "   gl_Position = a_position;               \n"
+      "   gl_Position = u_mvpMatrix * a_position; \n"
       "   color = a_color;                        \n"
       "}                                          \n";
 
@@ -70,6 +77,9 @@ int Init ( ESContext *esContext )
    // Load the shaders and get a linked program object
    userData->programObject = esLoadProgram ( vShaderStr, fShaderStr );
 
+   // Get the uniform locations
+   userData->mvpLoc = glGetUniformLocation ( userData->programObject, "u_mvpMatrix" );
+
    glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
    return TRUE;
 }
@@ -80,6 +90,8 @@ int Init ( ESContext *esContext )
 void Draw ( ESContext *esContext )
 {
    UserData *userData = esContext->userData;
+   ESMatrix perspective;
+   float    aspect;
 
    GLfloat vVertices[] = { -0.5f,  0.5f, 0.0f,  // Position 0
                             1.0f,  0.0f, 0.0f,  1.0f,  // Red
@@ -111,6 +123,18 @@ void Draw ( ESContext *esContext )
 
    glEnableVertexAttribArray ( 0 );
    glEnableVertexAttribArray ( 1 );
+
+   // Load the MVP matrix
+   glUniformMatrix4fv ( userData->mvpLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvpMatrix.m[0][0] );
+
+   // Compute the window aspect ratio
+   aspect = ( GLfloat ) esContext->width / ( GLfloat ) esContext->height;
+
+   // Generate a perspective matrix
+   esMatrixLoadIdentity ( &perspective );
+   esOrtho(&perspective, -aspect, aspect, -1, 1, -1, 1);
+
+   memcpy ( &userData->mvpMatrix, &perspective, sizeof ( ESMatrix ) );
 
    glDrawElements ( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices );
 }
