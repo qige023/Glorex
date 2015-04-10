@@ -84,15 +84,12 @@ GLuint LoadTexture ( void *ioContext, char *fileName )
 
    android_fopen_set_asset_manager(assetManager);
 
-   esLogMessage ( "1111111111111111111111111111");
-
+   //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
    FILE *pFile = android_fopen(fileName, "rb");
-
-   esLogMessage ( "222222222222222222222222222222222");
 
    char *buffer = stbi_load_from_file(pFile, &width, &height, &n, 0);
 
-   esLogMessage ( "333333333333333333333333333333333");
+   fclose(pFile);
 
    GLuint texId;
 
@@ -113,8 +110,6 @@ GLuint LoadTexture ( void *ioContext, char *fileName )
 
    free ( buffer );
 
-   esLogMessage ( "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-
    return texId;
 }
 
@@ -126,12 +121,13 @@ int Init ( ESContext *esContext )
    UserData *userData = esContext->userData;
    char vShaderStr[] =
       "#version 300 es                            \n"
+      "uniform mat4 u_mvpMatrix;                  \n"
       "layout(location = 0) in vec4 a_position;   \n"
       "layout(location = 1) in vec2 a_texCoord;   \n"
       "out vec2 v_texCoord;                       \n"
       "void main()                                \n"
       "{                                          \n"
-      "   gl_Position = a_position;               \n"
+      "   gl_Position = u_mvpMatrix * a_position; \n"
       "   v_texCoord = a_texCoord;                \n"
       "}                                          \n";
 
@@ -151,9 +147,6 @@ int Init ( ESContext *esContext )
 
    // Get the uniform locations
    userData->mvpLoc = glGetUniformLocation ( userData->programObject, "u_mvpMatrix" );
-
-
-   esLogMessage ( "aaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
    // Get the sampler locations
    userData->samplerLoc = glGetUniformLocation ( userData->programObject, "s_texture" );
@@ -247,13 +240,8 @@ void Draw ( ESContext *esContext )
    glVertexAttribPointer ( 1, 2, GL_FLOAT,
                           GL_FALSE, 2 * sizeof ( GLfloat ), userData->texCoords );
 
-   // Load the normal
-   glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                          GL_FALSE, 3 * sizeof ( GLfloat ),  userData->normals );
-
    glEnableVertexAttribArray ( 0 );
    glEnableVertexAttribArray ( 1 );
-   glEnableVertexAttribArray ( 2 );
 
    // Bind the texture
    glActiveTexture ( GL_TEXTURE0 );
