@@ -80,6 +80,7 @@ static void HandleCommand ( struct android_app *pApp, int32_t cmd )
          break;
 
       case APP_CMD_INIT_WINDOW:
+         esContext->platformData = ( void * ) pApp->activity->assetManager;
 
          esContext->eglNativeDisplay = EGL_DEFAULT_DISPLAY;
          esContext->eglNativeWindow = pApp->window;
@@ -93,7 +94,6 @@ static void HandleCommand ( struct android_app *pApp, int32_t cmd )
          break;
 
       case APP_CMD_TERM_WINDOW:
-
          // Cleanup on shutdown
          if ( esContext->shutdownFunc != NULL )
          {
@@ -192,8 +192,6 @@ void android_main ( struct android_app *pApp )
 
    // Initialize the context
    memset ( &esContext, 0, sizeof ( ESContext ) );
-
-   esContext.platformData = ( void * ) pApp->activity->assetManager;
 
    pApp->onAppCmd = HandleCommand;
    pApp->userData = &esContext;

@@ -293,19 +293,21 @@ void Shutdown ( ESContext *esContext )
    // Delete texture object
    glDeleteTextures ( 1, &userData->textureId );
 
-   if ( userData->vertices != NULL )
-   {
+   if ( userData->vertices != NULL ) {
       free ( userData->vertices );
    }
 
-   if ( userData->indices != NULL )
-   {
+   if ( userData->indices != NULL ) {
       free ( userData->indices );
    }
 
-   free ( userData->normals );
+   if (userData->normals != NULL ) {
+      free ( userData->normals );
+   }
 
-   free ( userData->texCoords );
+   if (userData->normals != NULL ) {
+      free ( userData->texCoords );
+   }
 
    // Delete program object
    glDeleteProgram ( userData->programObject );
