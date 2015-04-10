@@ -71,6 +71,28 @@ typedef struct
    ESMatrix  mvpMatrix;
 } UserData;
 
+unsigned char *flipImage(unsigned char *data, int width, int height, int channels) {
+    /*	create a copy the image data	*/
+	unsigned char *img = (unsigned char*)malloc( width*height*channels );
+	memcpy( img, data, width*height*channels );
+
+    int i, j;
+    for( j = 0; j*2 < height; ++j )
+    {
+        int index1 = j * width * channels;
+        int index2 = (height - 1 - j) * width * channels;
+        for( i = width * channels; i > 0; --i )
+        {
+            unsigned char temp = img[index1];
+            img[index1] = img[index2];
+            img[index2] = temp;
+            ++index1;
+            ++index2;
+        }
+    }
+    return img;
+}
+
 ///
 // Load texture from disk
 //
@@ -78,7 +100,7 @@ GLuint LoadTexture ( void *ioContext, char *fileName )
 {
    int width,
        height,
-       n;
+       channels;
 
    AAssetManager *assetManager = ( AAssetManager * ) ioContext;
 
@@ -87,7 +109,10 @@ GLuint LoadTexture ( void *ioContext, char *fileName )
    //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
    FILE *pFile = android_fopen(fileName, "rb");
 
-   char *buffer = stbi_load_from_file(pFile, &width, &height, &n, 0);
+   char *buffer = stbi_load_from_file(pFile, &width, &height, &channels, 0);
+
+   //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
+   char *nBuffer = flipImage(buffer, width, height, channels);
 
    fclose(pFile);
 
@@ -102,13 +127,14 @@ GLuint LoadTexture ( void *ioContext, char *fileName )
    glGenTextures ( 1, &texId );
    glBindTexture ( GL_TEXTURE_2D, texId );
 
-   glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
+   glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nBuffer );
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
    free ( buffer );
+   free ( nBuffer );
 
    return texId;
 }
@@ -159,7 +185,7 @@ int Init ( ESContext *esContext )
                                 &userData->texCoords, &userData->indices );
 
    // Starting rotation angle for the cube
-   userData->angle = 45.0f;
+   userData->angle = 0.0f;
 
    glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
    return GL_TRUE;

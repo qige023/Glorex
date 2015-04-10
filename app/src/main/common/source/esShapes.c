@@ -177,31 +177,37 @@ int ESUTIL_API esGenCube ( float scale, GLfloat **vertices, GLfloat **normals,
 
    GLfloat cubeVerts[] =
    {
+      //downer face
       -0.5f, -0.5f, -0.5f,
       -0.5f, -0.5f,  0.5f,
       0.5f, -0.5f,  0.5f,
       0.5f, -0.5f, -0.5f,
 
+      //upper face
       -0.5f,  0.5f, -0.5f,
       -0.5f,  0.5f,  0.5f,
       0.5f,  0.5f,  0.5f,
       0.5f,  0.5f, -0.5f,
 
+      //back face
       -0.5f, -0.5f, -0.5f,
       -0.5f,  0.5f, -0.5f,
       0.5f,  0.5f, -0.5f,
       0.5f, -0.5f, -0.5f,
 
+      //front face
       -0.5f, -0.5f, 0.5f,
       -0.5f,  0.5f, 0.5f,
       0.5f,  0.5f, 0.5f,
       0.5f, -0.5f, 0.5f,
 
+      //left face
       -0.5f, -0.5f, -0.5f,
       -0.5f, -0.5f,  0.5f,
       -0.5f,  0.5f,  0.5f,
       -0.5f,  0.5f, -0.5f,
 
+      //right face
       0.5f, -0.5f, -0.5f,
       0.5f, -0.5f,  0.5f,
       0.5f,  0.5f,  0.5f,
