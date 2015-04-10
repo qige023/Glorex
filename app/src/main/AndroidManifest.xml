@@ -47,6 +47,15 @@
                 android:name="android.app.lib_name"
                 android:value="Polygon2D" />
         </activity>
+        <activity
+            android:name=".stubs.SimpleTexture"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="SimpleTexture" />
+        </activity>
     </application>
 
 </manifest>

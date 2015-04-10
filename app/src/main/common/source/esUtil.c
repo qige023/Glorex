@@ -314,22 +314,22 @@ static esFile *esFileOpen ( void *ioContext, const char *fileName )
 {
    esFile *pFile = NULL;
 
-#ifdef ANDROID
+    #ifdef ANDROID
 
-   if ( ioContext != NULL )
-   {
-      AAssetManager *assetManager = ( AAssetManager * ) ioContext;
-      pFile = AAssetManager_open ( assetManager, fileName, AASSET_MODE_BUFFER );
-   }
+       if ( ioContext != NULL )
+       {
+          AAssetManager *assetManager = ( AAssetManager * ) ioContext;
+          pFile = AAssetManager_open ( assetManager, fileName, AASSET_MODE_BUFFER );
+       }
 
-#else
-#ifdef __APPLE__
-   // iOS: Remap the filename to a path that can be opened from the bundle.
-   fileName = GetBundleFileName ( fileName );
-#endif
+    #else
+       #ifdef __APPLE__
+           // iOS: Remap the filename to a path that can be opened from the bundle.
+          fileName = GetBundleFileName ( fileName );
+       #endif
 
-   pFile = fopen ( fileName, "rb" );
-#endif
+       pFile = fopen ( fileName, "rb" );
+    #endif
 
    return pFile;
 }
