@@ -44,6 +44,9 @@ typedef struct
 
    // Uniform locations
    GLint  mvpLoc;
+   GLint  mvLoc;
+   GLint  normalLoc;
+   GLint  projectionLoc;
 
    // Vertex data
    GLfloat  *vertices;
@@ -51,9 +54,6 @@ typedef struct
    GLfloat  *texCoords;
    GLuint   *indices;
    int       numIndices;
-
-   // Sampler location
-   GLint samplerLoc;
 
    // Texture handle
    GLuint textureId;
@@ -63,56 +63,13 @@ typedef struct
 
    // MVP matrix
    ESMatrix  mvpMatrix;
+
+   ESMatrix  mvMatrix;
+
+   ESMatrix  projectionMatrix;
+
+   ESNormalMatrix  normalMatrix;
 } UserData;
-
-///
-// Create a simple cubemap with a 1x1 face with a different
-// color for each face
-GLuint CreateSimpleTextureCubemap( )
-{
-   GLuint textureId;
-   // Six 1x1 RGB faces
-   GLubyte cubePixels[6 * 3] =
-   {
-      // Face 0 - Red
-      255, 0, 0,
-      // Face 1 - Green,
-      0, 255, 0,
-      // Face 2 - Blue
-      0, 0, 255,
-      // Face 3 - Yellow
-      255, 255, 0,
-      // Face 4 - Purple
-      255, 0, 255,
-      // Face 5 - White
-      255, 255, 255
-   };
-
-   // Use tightly packed data
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-   // Generate a texture object
-   glGenTextures ( 1, &textureId );
-
-   // Bind the texture object
-   glBindTexture ( GL_TEXTURE_2D, textureId );
-
-   // Load the cube face
-   glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0,
-                  GL_RGB, GL_UNSIGNED_BYTE, cubePixels );
-
-   // Set the filtering mode
-   glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-   glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-   glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-   glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-//   // load up a texture
-//   textureId=loadTexture(@"texture.png", -1, -1);
-
-   return textureId;
-
-}
 
 ///
 // Initialize the shader and program object
@@ -121,38 +78,49 @@ int Init ( ESContext *esContext )
 {
    UserData *userData = esContext->userData;
    const char vShaderStr[] =
-      "#version 300 es                             \n"
-      "uniform mat4 u_mvpMatrix;                   \n"
-      "layout(location = 0) in vec4 a_position;    \n"
-      "layout(location = 1) in vec2 a_texCoord;    \n"
-      "out vec2 v_texCoord;                        \n"
-      "out vec4 color;                             \n"
-      "void main()                                 \n"
-      "{                                           \n"
-      "   gl_Position = u_mvpMatrix * a_position;  \n"
-      "   v_texCoord = a_texCoord;                 \n"
-      "   color = a_position;                      \n"
-      "}                                           \n";
+      "#version 300 es                                         \n"
+      "layout (location = 0) in vec3 VertexPosition;           \n"
+      "layout (location = 2) in vec3 VertexNormal;             \n"
+      "out vec3 LightIntensity;                                \n"
+      "const vec4 LightPosition =vec4(4.0f, 4.0f, 2.0f, 1.0f);  \n"
+      "const vec3 Kd=vec3(0.9f, 0.5f, 0.3f);                   \n"
+      "const vec3 Ld=vec3(1.0f, 1.0f, 1.0f);                   \n"
+      "uniform mat4 ModelViewMatrix;                           \n"
+      "uniform mat3 NormalMatrix;                              \n"
+      "uniform mat4 ProjectionMatrix;                          \n"
+      "uniform mat4 MVP;                                       \n"
+      "void main()                                             \n"
+      "{                                                       \n"
+      "   vec3 tnorm = normalize( NormalMatrix * VertexNormal);           \n"
+      "   vec4 eyeCoords = ModelViewMatrix * vec4(VertexPosition,1.0);    \n"
+      "   vec3 s = normalize(vec3(LightPosition - eyeCoords));            \n"
+      "   LightIntensity = Ld * Kd * max( dot( s, tnorm ), 0.0 );         \n"
+      "   gl_Position = MVP * vec4(VertexPosition,1.0);                   \n"
+      "}                                                                  \n";
 
    const char fShaderStr[] =
       "#version 300 es                                \n"
       "precision mediump float;                       \n"
-      "in vec2 v_texCoord;                            \n"
-      "in vec4 color;                                 \n"
+      "in vec3 LightIntensity;                        \n"
       "layout(location = 0) out vec4 outColor;        \n"
       "void main()                                    \n"
       "{                                              \n"
-      "  outColor = color;                            \n"
+      "  outColor = vec4(LightIntensity, 1.0);        \n"
       "}                                              \n";
 
    // Load the shaders and get a linked program object
    userData->programObject = esLoadProgram ( vShaderStr, fShaderStr );
 
    // Get the uniform locations
-   userData->mvpLoc = glGetUniformLocation ( userData->programObject, "u_mvpMatrix" );
+   userData->mvpLoc = glGetUniformLocation ( userData->programObject, "MVP" );
 
-   // Get the sampler locations
-   userData->samplerLoc = glGetUniformLocation ( userData->programObject, "s_texture" );
+   // Get the uniform locations
+   userData->mvLoc = glGetUniformLocation ( userData->programObject, "ModelViewMatrix" );
+
+   // Get the uniform locations
+   userData->normalLoc = glGetUniformLocation ( userData->programObject, "NormalMatrix" );
+
+   userData->projectionLoc = glGetUniformLocation ( userData->programObject, "ProjectionMatrix" );
 
    // Load the texture
    //userData->textureId = CreateSimpleTextureCubemap ();
@@ -164,7 +132,8 @@ int Init ( ESContext *esContext )
    // Starting rotation angle for the cube
    userData->angle = 45.0f;
 
-   glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
+   // Set backgroundColor
+   glClearColor ( 0.2f, 0.2f, 0.2f, 0.0f );
    return GL_TRUE;
 }
 
@@ -175,8 +144,6 @@ int Init ( ESContext *esContext )
 void Update ( ESContext *esContext, float deltaTime )
 {
    UserData *userData = esContext->userData;
-   ESMatrix perspective;
-   ESMatrix modelview;
    float    aspect;
 
    // Compute a rotation angle based on time to rotate the cube
@@ -191,21 +158,23 @@ void Update ( ESContext *esContext, float deltaTime )
    aspect = ( GLfloat ) esContext->width / ( GLfloat ) esContext->height;
 
    // Generate a perspective matrix with a 60 degree FOV
-   esMatrixLoadIdentity ( &perspective );
-   esPerspective ( &perspective, 60.0f, aspect, 1.0f, 20.0f );
+   esMatrixLoadIdentity ( &userData->projectionMatrix );
+   esPerspective ( &userData->projectionMatrix, 60.0f, aspect, 1.0f, 20.0f );
 
    // Generate a model view matrix to rotate/translate the cube
-   esMatrixLoadIdentity ( &modelview );
+   esMatrixLoadIdentity ( &userData->mvMatrix );
 
    // Translate away from the viewer
-   esTranslate ( &modelview, 0.0, 0.0, -2.0 );
+   esTranslate (  &userData->mvMatrix , 0.0, 0.0, -2.0 );
 
    // Rotate the cube
-   esRotate ( &modelview, userData->angle, 1.0, 0.0, 1.0 );
+   esRotate ( &userData->mvMatrix, userData->angle, 1.0, 0.0, 1.0 );
+
+   esCopyToNormalMatrix( &userData->normalMatrix, &userData->mvMatrix);
 
    // Compute the final MVP by multiplying the
    // modevleiw and perspective matrices together
-   esMatrixMultiply ( &userData->mvpMatrix, &modelview, &perspective );
+   esMatrixMultiply ( &userData->mvpMatrix, &userData->mvMatrix, &userData->projectionMatrix );
 }
 
 ///
@@ -230,12 +199,6 @@ void Draw ( ESContext *esContext )
    // The type of depth testing to do
    glDepthFunc(GL_LEQUAL);
 
-   // Enable smooth shading of color
-//   glShadeModel(GL_SMOOTH);
-
-   // Disable dithering for better performance
-//   glDisable(GL_DITHER);
-
    glEnable(GL_TEXTURE_2D);
 
    // Use the program object
@@ -257,21 +220,18 @@ void Draw ( ESContext *esContext )
    glEnableVertexAttribArray ( 1 );
    glEnableVertexAttribArray ( 2 );
 
-   // Set the vertex color to red
-   // glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
-
-
-   // Bind the texture
-   //glActiveTexture ( GL_TEXTURE0 );
-   //glBindTexture ( GL_TEXTURE_2D, userData->textureId );
-
    // Load the MVP matrix
    glUniformMatrix4fv ( userData->mvpLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvpMatrix.m[0][0] );
 
-   // Set the sampler texture unit to 0
-   glUniform1i ( userData->samplerLoc, 0 );
+   // Load the MV matrix
+   glUniformMatrix4fv ( userData->mvLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvMatrix.m[0][0] );
 
-   // Draw the cube
+   // Load the normal matrix
+   glUniformMatrix3fv ( userData->normalLoc, 1, GL_FALSE, ( GLfloat * ) &userData->normalMatrix.m[0][0] );
+
+   glUniformMatrix4fv ( userData->projectionLoc, 1, GL_FALSE, ( GLfloat * ) &userData->projectionMatrix.m[0][0] );
+
+   // Draw the torus
    glDrawElements ( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT, userData->indices );
 }
 

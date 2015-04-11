@@ -14,6 +14,6 @@
         <item>Instancing</item>
         <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
-        <item>TorusDiffuse</item>
+        <item>TorusDiffuse(spot light)</item>
     </string-array>
 </resources>

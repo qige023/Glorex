@@ -95,6 +95,11 @@ typedef struct
    GLfloat   m[4][4];
 } ESMatrix;
 
+typedef struct
+{
+   GLfloat   m[3][3];
+} ESNormalMatrix;
+
 typedef struct ESContext ESContext;
 
 struct ESContext
@@ -324,6 +329,8 @@ void ESUTIL_API esMatrixMultiply ( ESMatrix *result, ESMatrix *srcA, ESMatrix *s
 //// \param result returns identity matrix
 //
 void ESUTIL_API esMatrixLoadIdentity ( ESMatrix *result );
+
+void ESUTIL_API esCopyToNormalMatrix (ESNormalMatrix *result, ESMatrix *source);
 
 //
 /// \brief Generate a transformation matrix from eye position, look at and up vectors

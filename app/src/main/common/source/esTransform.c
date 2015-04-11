@@ -239,6 +239,21 @@ esMatrixLoadIdentity ( ESMatrix *result )
 }
 
 void ESUTIL_API
+esCopyToNormalMatrix (ESNormalMatrix *result, ESMatrix *source)
+{
+    memset ( result, 0x0, sizeof ( ESNormalMatrix ) );
+    result->m[0][0] = source->m[0][0];
+    result->m[0][1] = source->m[0][1];
+    result->m[0][2] = source->m[0][2];
+    result->m[1][0] = source->m[1][0];
+    result->m[1][1] = source->m[1][1];
+    result->m[1][2] = source->m[1][2];
+    result->m[2][0] = source->m[2][0];
+    result->m[2][1] = source->m[2][1];
+    result->m[2][2] = source->m[2][2];
+}
+
+void ESUTIL_API
 esMatrixLookAt ( ESMatrix *result,
                  float posX,    float posY,    float posZ,
                  float lookAtX, float lookAtY, float lookAtZ,
