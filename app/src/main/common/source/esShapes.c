@@ -46,6 +46,7 @@
 // Defines
 //
 #define ES_PI  (3.14159265f)
+#define ES_TWOPI 6.2831853071795862
 
 //////////////////////////////////////////////////////////////////
 //
@@ -375,4 +376,68 @@ int ESUTIL_API esGenSquareGrid ( int size, GLfloat **vertices, GLuint **indices 
    }
 
    return numIndices;
+}
+
+int ESUTIL_API esGenTorus ( GLfloat **vertices, GLfloat **normals, GLfloat **texCoords,
+                    GLuint **indices, float outerRadius, float innerRadius, int rings, int sides ) {
+
+    int faces = rings  * sides;
+    int numVertices = (rings + 1) * (sides);
+    int numIndices = 6 * faces;
+    *vertices = malloc ( sizeof ( GLfloat ) * 3 * numVertices );
+    *normals = malloc ( sizeof ( GLfloat ) * 3 * numVertices );
+    *texCoords = malloc ( sizeof ( GLfloat ) * 2 * numVertices );
+    *indices = malloc ( sizeof ( GLuint ) * numIndices );
+
+    float ringFactor  = (float)(ES_TWOPI / rings);
+    float sideFactor = (float)(ES_TWOPI / sides);
+    int idx = 0, tidx = 0, ring = 0, side = 0;
+    for( ring = 0; ring <= rings; ring++ ) {
+        float u = ring * ringFactor;
+        float cu = cosf(u);
+        float su = sinf(u);
+        for( side = 0; side < sides; side++ ) {
+            float v = side * sideFactor;
+            float cv = cosf(v);
+            float sv = sinf(v);
+            float r = (outerRadius + innerRadius * cv);
+            ( *vertices )[idx] = r * cu;
+            ( *vertices )[idx + 1] = r * su;
+            ( *vertices )[idx + 2] = innerRadius * sv;
+            ( *normals )[idx] = cv * cu * r;
+            ( *normals )[idx + 1] = cv * su * r;
+            ( *normals )[idx + 2] = sv * r;
+            ( *texCoords )[tidx] = (float)(u / ES_TWOPI);
+            ( *texCoords )[tidx+1] = (float)(v / ES_TWOPI);
+            tidx += 2;
+            // Normalize
+            float len = sqrt( ( *normals )[idx] * ( *normals )[idx] +
+                              ( *normals )[idx+1] * ( *normals )[idx+1] +
+                              ( *normals )[idx+2] * ( *normals )[idx+2] );
+            ( *normals )[idx] /= len;
+            ( *normals )[idx+1] /= len;
+            ( *normals )[idx+2] /= len;
+            idx += 3;
+        }
+    }
+
+    idx = 0;
+    ring = 0;
+    for( ring = 0; ring < rings; ring++ ) {
+        int ringStart = ring * sides;
+        int nextRingStart = (ring + 1) * sides;
+        for( side = 0; side < sides; side++ ) {
+            int nextSide = (side+1) % sides;
+            // The quad
+            ( *indices )[idx] = (ringStart + side);
+            ( *indices )[idx+1] = (nextRingStart + side);
+            ( *indices )[idx+2] = (nextRingStart + nextSide);
+            ( *indices )[idx+3] = ringStart + side;
+            ( *indices )[idx+4] = nextRingStart + nextSide;
+            ( *indices )[idx+5] = (ringStart + nextSide);
+            idx += 6;
+        }
+    }
+
+    return numIndices;
 }

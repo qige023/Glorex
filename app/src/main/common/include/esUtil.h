@@ -248,6 +248,9 @@ int ESUTIL_API esGenCube ( float scale, GLfloat **vertices, GLfloat **normals,
 //
 int ESUTIL_API esGenSquareGrid ( int size, GLfloat **vertices, GLuint **indices );
 
+int ESUTIL_API esGenTorus ( GLfloat **vertices, GLfloat **normals, GLfloat **texCoords,
+                    GLuint **indices, float outerRadius, float innerRadius, int rings, int sides );
+
 //
 /// \brief Loads a 8-bit, 24-bit or 32-bit TGA image from a file
 /// \param ioContext Context related to IO facility on the platform
