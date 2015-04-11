@@ -2,14 +2,16 @@
 <resources>
     <string-array name="lesson_names">
         <item>Hello Triangle</item>
-        <item>Simple VertexShader</item>
         <item>Polygon2D</item>
+        <item>Instancing</item>
+        <item>Simple VertexShader</item>
         <item>Simple Texture</item>
     </string-array>
     <string-array name="library_names">
         <item>HelloTriangle</item>
-        <item>SimpleVertexShader</item>
         <item>Polygon2D</item>
+        <item>Instancing</item>
+        <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
     </string-array>
 </resources>
