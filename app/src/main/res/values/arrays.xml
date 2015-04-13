@@ -6,7 +6,7 @@
         <item>Instancing</item>
         <item>Simple VertexShader</item>
         <item>Simple Texture</item>
-        <item>Torus Diffuse</item>
+        <item>Torus Diffuse(spot light)</item>
     </string-array>
     <string-array name="library_names">
         <item>HelloTriangle</item>
@@ -14,6 +14,6 @@
         <item>Instancing</item>
         <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
-        <item>TorusDiffuse(spot light)</item>
+        <item>TorusDiffuse</item>
     </string-array>
 </resources>

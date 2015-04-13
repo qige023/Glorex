@@ -1,3 +1,7 @@
 /build
 *.iml
-
+/*.settings
+*.cproject
+*.project
+*.classpath
+/Debug/
