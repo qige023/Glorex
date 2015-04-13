@@ -1,284 +1,248 @@
-// The MIT License (MIT)
 //
-// Copyright (c) 2013 Dan Ginsburg, Budirijanto Purnomo
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-//
-// Book:      OpenGL(R) ES 3.0 Programming Guide, 2nd Edition
-// Authors:   Dan Ginsburg, Budirijanto Purnomo, Dave Shreiner, Aaftab Munshi
-// ISBN-10:   0-321-93388-5
-// ISBN-13:   978-0-321-93388-1
-// Publisher: Addison-Wesley Professional
-// URLs:      http://www.opengles-book.com
-//            http://my.safaribooksonline.com/book/animation-and-3d/9780133440133
-//
-// Simple_VertexShader.c
-//
-//    This is a simple example that draws a rotating cube in perspective
-//    using a vertex shader to transform the object
+// TorusDiffuse.c
 //
 #include <stdlib.h>
 #include "esUtil.h"
 
-typedef struct
-{
-   // Handle to a program object
-   GLuint programObject;
+typedef struct {
+	// Handle to a program object
+	GLuint programObject;
 
-   // Uniform locations
-   GLint  mvpLoc;
-   GLint  mvLoc;
-   GLint  normalLoc;
-   GLint  projectionLoc;
+	// Uniform locations
+	GLint mvpLoc;
+	GLint mvLoc;
+	GLint normalLoc;
+	GLint projectionLoc;
 
-   // Vertex data
-   GLfloat  *vertices;
-   GLfloat  *normals;
-   GLfloat  *texCoords;
-   GLuint   *indices;
-   int       numIndices;
+	// Vertex data
+	GLfloat *vertices;
+	GLfloat *normals;
+	GLfloat *texCoords;
+	GLuint *indices;
+	int numIndices;
 
-   // Texture handle
-   GLuint textureId;
+	// Texture handle
+	GLuint textureId;
 
-   // Rotation angle
-   GLfloat   angle;
+	// Rotation angle
+	GLfloat angle;
 
-   // MVP matrix
-   ESMatrix  mvpMatrix;
+	// MVP matrix
+	ESMatrix mvpMatrix;
 
-   ESMatrix  mvMatrix;
+	ESMatrix mvMatrix;
 
-   ESMatrix  projectionMatrix;
+	ESMatrix projectionMatrix;
 
-   ESNormalMatrix  normalMatrix;
+	ESNormalMatrix normalMatrix;
 } UserData;
 
 ///
 // Initialize the shader and program object
 //
-int Init ( ESContext *esContext )
-{
-   UserData *userData = esContext->userData;
-   const char vShaderStr[] =
-      "#version 300 es                                         \n"
-      "layout (location = 0) in vec3 VertexPosition;           \n"
-      "layout (location = 2) in vec3 VertexNormal;             \n"
-      "out vec3 LightIntensity;                                \n"
-      "const vec4 LightPosition =vec4(4.0f, 4.0f, 2.0f, 1.0f);  \n"
-      "const vec3 Kd=vec3(0.9f, 0.5f, 0.3f);                   \n"
-      "const vec3 Ld=vec3(1.0f, 1.0f, 1.0f);                   \n"
-      "uniform mat4 ModelViewMatrix;                           \n"
-      "uniform mat3 NormalMatrix;                              \n"
-      "uniform mat4 ProjectionMatrix;                          \n"
-      "uniform mat4 MVP;                                       \n"
-      "void main()                                             \n"
-      "{                                                       \n"
-      "   vec3 tnorm = normalize( NormalMatrix * VertexNormal);           \n"
-      "   vec4 eyeCoords = ModelViewMatrix * vec4(VertexPosition,1.0);    \n"
-      "   vec3 s = normalize(vec3(LightPosition - eyeCoords));            \n"
-      "   LightIntensity = Ld * Kd * max( dot( s, tnorm ), 0.0 );         \n"
-      "   gl_Position = MVP * vec4(VertexPosition,1.0);                   \n"
-      "}                                                                  \n";
+int Init(ESContext *esContext) {
+	UserData *userData = esContext->userData;
+	const char vShaderStr[] =
+			"#version 300 es                                                                                \n"
+					"layout (location = 0) in vec3 VertexPosition;                  \n"
+					"layout (location = 2) in vec3 VertexNormal;                   \n"
+					"out vec3 LightIntensity;                                                        \n"
+					"const vec4 LightPosition =vec4(4.0f, 4.0f, 2.0f, 1.0f);    \n"
+					"const vec3 Kd=vec3(0.9f, 0.5f, 0.3f);                                   \n"
+					"const vec3 Ld=vec3(1.0f, 1.0f, 1.0f);                                   \n"
+					"uniform mat4 ModelViewMatrix;                                      \n"
+					"uniform mat3 NormalMatrix;                                             \n"
+					"uniform mat4 ProjectionMatrix;                                        \n"
+					"uniform mat4 MVP;                                                                \n"
+					"void main()                                                                                 \n"
+					"{                                                                                                      \n"
+					"   vec3 tnorm = normalize( NormalMatrix * VertexNormal);                \n"
+					"   vec4 eyeCoords = ModelViewMatrix * vec4(VertexPosition,1.0);    \n"
+					"   vec3 s = normalize(vec3(LightPosition - eyeCoords));                          \n"
+					"   LightIntensity = Ld * Kd * max( dot( s, tnorm ), 0.0 );                         \n"
+					"   gl_Position = MVP * vec4(VertexPosition,1.0);                                       \n"
+					"}                                                                                                                                 \n";
 
-   const char fShaderStr[] =
-      "#version 300 es                                \n"
-      "precision mediump float;                       \n"
-      "in vec3 LightIntensity;                        \n"
-      "layout(location = 0) out vec4 outColor;        \n"
-      "void main()                                    \n"
-      "{                                              \n"
-      "  outColor = vec4(LightIntensity, 1.0);        \n"
-      "}                                              \n";
+	const char fShaderStr[] =
+			"#version 300 es                                                                    \n"
+					"precision medium                                                       \n"
+					"in vec3 LightIntensity;                                               \n"
+					"layout(location = 0) out vec4 outColor;               \n"
+					"void main()                                                                     \n"
+					"{                                                                                         \n"
+					"  outColor = vec4(LightIntensity, 1.0);                  \n"
+					"}                                                                                         \n";
 
-   // Load the shaders and get a linked program object
-   userData->programObject = esLoadProgram ( vShaderStr, fShaderStr );
+	// Load the shaders and get a linked program object
+	userData->programObject = esLoadProgram(vShaderStr, fShaderStr);
 
-   // Get the uniform locations
-   userData->mvpLoc = glGetUniformLocation ( userData->programObject, "MVP" );
+	// Get the uniform locations
+	userData->mvpLoc = glGetUniformLocation(userData->programObject, "MVP");
 
-   // Get the uniform locations
-   userData->mvLoc = glGetUniformLocation ( userData->programObject, "ModelViewMatrix" );
+	// Get the uniform locations
+	userData->mvLoc = glGetUniformLocation(userData->programObject,
+			"ModelViewMatrix");
 
-   // Get the uniform locations
-   userData->normalLoc = glGetUniformLocation ( userData->programObject, "NormalMatrix" );
+	// Get the uniform locations
+	userData->normalLoc = glGetUniformLocation(userData->programObject,
+			"NormalMatrix");
 
-   userData->projectionLoc = glGetUniformLocation ( userData->programObject, "ProjectionMatrix" );
+	userData->projectionLoc = glGetUniformLocation(userData->programObject,
+			"ProjectionMatrix");
 
-   // Load the texture
-   //userData->textureId = CreateSimpleTextureCubemap ();
-   // Generate the vertex data
-   userData->numIndices = esGenTorus (&userData->vertices, &userData->normals,
-                                &userData->texCoords, &userData->indices,
-                                0.5f, 0.2f, 40, 40);
+	// Load the texture
+	//userData->textureId = CreateSimpleTextureCubemap ();
+	// Generate the vertex data
+	userData->numIndices = esGenTorus(&userData->vertices, &userData->normals,
+			&userData->texCoords, &userData->indices, 0.5f, 0.2f, 40, 40);
 
-   // Starting rotation angle for the cube
-   userData->angle = 45.0f;
+	// Starting rotation angle for the cube
+	userData->angle = 45.0f;
 
-   // Set backgroundColor
-   glClearColor ( 0.2f, 0.2f, 0.2f, 0.0f );
-   return GL_TRUE;
+	// Set backgroundColor
+	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+	return GL_TRUE;
 }
-
 
 ///
 // Update MVP matrix based on time
 //
-void Update ( ESContext *esContext, float deltaTime )
-{
-   UserData *userData = esContext->userData;
-   float    aspect;
+void Update(ESContext *esContext, float deltaTime) {
+	UserData *userData = esContext->userData;
+	float aspect;
 
-   // Compute a rotation angle based on time to rotate the cube
-   userData->angle += ( deltaTime * 40.0f );
+	// Compute a rotation angle based on time to rotate the cube
+	userData->angle += (deltaTime * 40.0f);
 
-   if ( userData->angle >= 360.0f )
-   {
-      userData->angle -= 360.0f;
-   }
+	if (userData->angle >= 360.0f) {
+		userData->angle -= 360.0f;
+	}
 
-   // Compute the window aspect ratio
-   aspect = ( GLfloat ) esContext->width / ( GLfloat ) esContext->height;
+	// Compute the window aspect ratio
+	aspect = (GLfloat) esContext->width / (GLfloat) esContext->height;
 
-   // Generate a perspective matrix with a 60 degree FOV
-   esMatrixLoadIdentity ( &userData->projectionMatrix );
-   esPerspective ( &userData->projectionMatrix, 60.0f, aspect, 1.0f, 20.0f );
+	// Generate a perspective matrix with a 60 degree FOV
+	esMatrixLoadIdentity(&userData->projectionMatrix);
+	esPerspective(&userData->projectionMatrix, 60.0f, aspect, 1.0f, 20.0f);
 
-   // Generate a model view matrix to rotate/translate the cube
-   esMatrixLoadIdentity ( &userData->mvMatrix );
+	// Generate a model view matrix to rotate/translate the cube
+	esMatrixLoadIdentity(&userData->mvMatrix);
 
-   // Translate away from the viewer
-   esTranslate (  &userData->mvMatrix , 0.0, 0.0, -2.0 );
+	// Translate away from the viewer
+	esTranslate(&userData->mvMatrix, 0.0, 0.0, -2.0);
 
-   // Rotate the cube
-   esRotate ( &userData->mvMatrix, userData->angle, 1.0, 0.0, 1.0 );
+	// Rotate the cube
+	esRotate(&userData->mvMatrix, userData->angle, 1.0, 0.0, 1.0);
 
-   esCopyToNormalMatrix( &userData->normalMatrix, &userData->mvMatrix);
+	esCopyToNormalMatrix(&userData->normalMatrix, &userData->mvMatrix);
 
-   // Compute the final MVP by multiplying the
-   // modevleiw and perspective matrices together
-   esMatrixMultiply ( &userData->mvpMatrix, &userData->mvMatrix, &userData->projectionMatrix );
+	// Compute the final MVP by multiplying the
+	// modevleiw and perspective matrices together
+	esMatrixMultiply(&userData->mvpMatrix, &userData->mvMatrix,
+			&userData->projectionMatrix);
 }
 
 ///
 // Draw a triangle using the shader pair created in Init()
 //
-void Draw ( ESContext *esContext )
-{
-   UserData *userData = esContext->userData;
+void Draw(ESContext *esContext) {
+	UserData *userData = esContext->userData;
 
-   // Set the viewport
-   glViewport ( 0, 0, esContext->width, esContext->height );
+	// Set the viewport
+	glViewport(0, 0, esContext->width, esContext->height);
 
-   // Clear the color buffer
-   glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	// Clear the color buffer
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   // Set depth's clear-value to farthest
-   glClearDepthf(1.0f);
+	// Set depth's clear-value to farthest
+	glClearDepthf(1.0f);
 
-   // Enables depth-buffer for hidden surface removal
-   glEnable(GL_DEPTH_TEST);
+	// Enables depth-buffer for hidden surface removal
+	glEnable(GL_DEPTH_TEST);
 
-   // The type of depth testing to do
-   glDepthFunc(GL_LEQUAL);
+	// The type of depth testing to do
+	glDepthFunc(GL_LEQUAL);
 
-   glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 
-   // Use the program object
-   glUseProgram ( userData->programObject );
+	// Use the program object
+	glUseProgram(userData->programObject);
 
-   // Load the vertex position
-   glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), userData->vertices );
+	// Load the vertex position
+	glVertexAttribPointer(0, 3, GL_FLOAT,
+	GL_FALSE, 3 * sizeof(GLfloat), userData->vertices);
 
-   // Load the texture coordinate
-   glVertexAttribPointer ( 1, 2, GL_FLOAT,
-                          GL_FALSE, 2 * sizeof ( GLfloat ), userData->texCoords );
+	// Load the texture coordinate
+	glVertexAttribPointer(1, 2, GL_FLOAT,
+	GL_FALSE, 2 * sizeof(GLfloat), userData->texCoords);
 
-   // Load the normal
-   glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                          GL_FALSE, 3 * sizeof ( GLfloat ),  userData->normals );
+	// Load the normal
+	glVertexAttribPointer(2, 3, GL_FLOAT,
+	GL_FALSE, 3 * sizeof(GLfloat), userData->normals);
 
-   glEnableVertexAttribArray ( 0 );
-   glEnableVertexAttribArray ( 1 );
-   glEnableVertexAttribArray ( 2 );
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
-   // Load the MVP matrix
-   glUniformMatrix4fv ( userData->mvpLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvpMatrix.m[0][0] );
+	// Load the MVP matrix
+	glUniformMatrix4fv(userData->mvpLoc, 1, GL_FALSE,
+			(GLfloat *) &userData->mvpMatrix.m[0][0]);
 
-   // Load the MV matrix
-   glUniformMatrix4fv ( userData->mvLoc, 1, GL_FALSE, ( GLfloat * ) &userData->mvMatrix.m[0][0] );
+	// Load the MV matrix
+	glUniformMatrix4fv(userData->mvLoc, 1, GL_FALSE,
+			(GLfloat *) &userData->mvMatrix.m[0][0]);
 
-   // Load the normal matrix
-   glUniformMatrix3fv ( userData->normalLoc, 1, GL_FALSE, ( GLfloat * ) &userData->normalMatrix.m[0][0] );
+	// Load the normal matrix
+	glUniformMatrix3fv(userData->normalLoc, 1, GL_FALSE,
+			(GLfloat *) &userData->normalMatrix.m[0][0]);
 
-   glUniformMatrix4fv ( userData->projectionLoc, 1, GL_FALSE, ( GLfloat * ) &userData->projectionMatrix.m[0][0] );
+	glUniformMatrix4fv(userData->projectionLoc, 1, GL_FALSE,
+			(GLfloat *) &userData->projectionMatrix.m[0][0]);
 
-   // Draw the torus
-   glDrawElements ( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT, userData->indices );
+	// Draw the torus
+	glDrawElements( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT,
+			userData->indices);
 }
 
 ///
 // Cleanup
 //
-void Shutdown ( ESContext *esContext )
-{
-   UserData *userData = esContext->userData;
+void Shutdown(ESContext *esContext) {
+	UserData *userData = esContext->userData;
 
-   // Delete texture object
-   //glDeleteTextures ( 1, &userData->textureId );
+	// Delete texture object
+	//glDeleteTextures ( 1, &userData->textureId );
 
-   if ( userData->vertices != NULL )
-   {
-      free ( userData->vertices );
-   }
+	if (userData->vertices != NULL) {
+		free(userData->vertices);
+	}
 
-   if ( userData->indices != NULL )
-   {
-      free ( userData->indices );
-   }
+	if (userData->indices != NULL) {
+		free(userData->indices);
+	}
 
-   free ( userData->normals );
+	free(userData->normals);
 
-   free ( userData->texCoords );
+	free(userData->texCoords);
 
-   // Delete program object
-   glDeleteProgram ( userData->programObject );
+	// Delete program object
+	glDeleteProgram(userData->programObject);
 }
 
+int esMain(ESContext *esContext) {
+	esContext->userData = malloc(sizeof(UserData));
 
-int esMain ( ESContext *esContext )
-{
-   esContext->userData = malloc ( sizeof ( UserData ) );
+	esCreateWindow(esContext, "Simple VertexShader", 320, 240,
+			ES_WINDOW_RGB | ES_WINDOW_DEPTH);
 
-   esCreateWindow ( esContext, "Simple VertexShader", 320, 240, ES_WINDOW_RGB | ES_WINDOW_DEPTH );
+	if (!Init(esContext)) {
+		return GL_FALSE;
+	}
 
-   if ( !Init ( esContext ) )
-   {
-      return GL_FALSE;
-   }
+	esRegisterShutdownFunc(esContext, Shutdown);
+	esRegisterUpdateFunc(esContext, Update);
+	esRegisterDrawFunc(esContext, Draw);
 
-   esRegisterShutdownFunc ( esContext, Shutdown );
-   esRegisterUpdateFunc ( esContext, Update );
-   esRegisterDrawFunc ( esContext, Draw );
-
-   return GL_TRUE;
+	return GL_TRUE;
 }
 
