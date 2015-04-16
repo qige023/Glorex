@@ -2,7 +2,8 @@ OpenGL ES 3.0 Programming On Android
 ===============================
 
 This repository contains the sample code for learning opengl ES 3.0 using native c/c++.
-*Currently this project's core C++ engine is under active development, not guarantee build successfully on branch "master",but you still can switch to branch "branch-c" for successfully building a older-version app *
+
+*Currently this project's core C++ engine is under active development, not guarantee build successfully on branch "master",but you still can switch to branch "branch-c" for successfully building a older-version app*
 
 ## Features ##
 * Focus on mobile(Android/IOS) gles3.0+
