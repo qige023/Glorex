@@ -5,7 +5,7 @@
 #pragma warning( disable : 4290 )
 #endif
 
-#include "cookbookogl.h"
+#include "esutil.h"
 
 #include <string>
 using std::string;
@@ -29,11 +29,11 @@ class GLSLProgramException : public std::runtime_error {
 namespace GLSLShader {
   enum GLSLShaderType {
     VERTEX = GL_VERTEX_SHADER, 
-    FRAGMENT = GL_FRAGMENT_SHADER, 
-    GEOMETRY = GL_GEOMETRY_SHADER,
-    TESS_CONTROL = GL_TESS_CONTROL_SHADER, 
-    TESS_EVALUATION = GL_TESS_EVALUATION_SHADER, 
-    COMPUTE = GL_COMPUTE_SHADER
+    FRAGMENT = GL_FRAGMENT_SHADER
+//    GEOMETRY = GL_GEOMETRY_SHADER,
+//    TESS_CONTROL = GL_TESS_CONTROL_SHADER,
+//    TESS_EVALUATION = GL_TESS_EVALUATION_SHADER,
+//    COMPUTE = GL_COMPUTE_SHADER
   };
 };
 

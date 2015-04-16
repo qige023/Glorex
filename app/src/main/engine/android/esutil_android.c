@@ -187,7 +187,7 @@ void android_main(struct android_app *pApp) {
     pApp->userData = &esContext;
 
     //设置输入事件的处理函数，如触摸响应
-    pApp->onInputEvent = &onAppInput;
+    pApp->onInputEvent = onAppInput;
 
     lastTime = GetCurrentTime();
 
