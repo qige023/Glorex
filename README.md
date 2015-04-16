@@ -2,14 +2,15 @@ OpenGL ES 3.0 Programming On Android
 ===============================
 
 This repository contains the sample code for learning opengl ES 3.0 using native c/c++.
+*Currently this project's core C++ engine is under active development, not guarantee build successfully on branch "master",but you still can switch to branch "branch-c" for successfully building a older-version app *
 
 ## Features ##
-* Focus on gles3.0+
-* Using native c/c++ and pure gles api
-* Using [GLM](http://glm.g-truc.net/0.9.6/index.html) for Math
+* Focus on mobile(Android/IOS) gles3.0+
+* Use native c/c++ and pure gles api
+* Use [GLM](http://glm.g-truc.net/0.9.6/index.html) for Math
 * Nice framework and examples borrow from a couple of projects (see below)
 * Plenty examples in a single app for demo
-* Using Gradle for Building On Android, easy for building
+* Use Gradle for Building On Android, easy to build
 
 *Framework code inspired by:*
 
@@ -28,7 +29,7 @@ to be add..
 ## Sample ##
 to be add..
 
-## Platforms ##
+## Support Platforms ##
 This project currently target on Android only, IOS support will be in consider in future
 
 builds and test on the following platforms:
@@ -41,7 +42,7 @@ API Level 18+ on Android 4.3+
 ## Builds ##
 need Android sdk & ndk installed
 
-need Android Studio or Eclipse(CDT with Gradle Plugin) 
+need Android Studio or Eclipse(with CDT and Gradle plugins) 
 
 import gradle project, build and enjoy...
 
