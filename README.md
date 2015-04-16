@@ -1,17 +1,37 @@
 OpenGL ES 3.0 Programming On Android
 ===============================
 
-This repository contains the sample code for learning opengl ES 3.0.
+This repository contains the sample code for learning opengl ES 3.0 using native c/c++.
 
-It uses framework code from the OpenGL ES 3.0 Programming Guide by Addison-Wesley Professional.
+## Features ##
+* Focus on gles3.0+
+* Using native c/c++ and pure gles api
+* Using [GLM](http://glm.g-truc.net/0.9.6/index.html) for Math
+* Nice framework and examples borrow from a couple of projects (see below)
+* Plenty examples in a single app for demo
+* Using Gradle for Building On Android, easy for building
 
-Examples are inspired by OpenGL ES 3.0 Programming Guide(http://www.opengles-book.com) and Nehe OpenGL's Lesson (http://nehe.gamedev.net/)
+*Framework code inspired by:*
+
+* [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
+* [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
+
+*Examples are inspired by:*
+
+* [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
+* [Nehe OpenGL's Lesson](http://nehe.gamedev.net/)
+* [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
+
+## Content ##
+to be add..
 
 ## Sample ##
 to be add..
 
 ## Platforms ##
-This project currently builds on the following platforms:
+This project currently target on Android only, IOS support will be in consider in future
+
+builds and test on the following platforms:
 
 * Android 4.3+ NDK (C/C++)
 * Android 4.3+ SDK (Java)
@@ -21,7 +41,9 @@ API Level 18+ on Android 4.3+
 ## Builds ##
 need Android sdk & ndk installed
 
-need Android Studio 1.1.0 newly and import gradle project, build and enjoy...
+need Android Studio or Eclipse(CDT with Gradle Plugin) 
+
+import gradle project, build and enjoy...
 
 to be add..
 
