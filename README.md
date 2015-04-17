@@ -9,6 +9,8 @@ This repository contains the sample code for learning opengl ES 3.0 using native
 * Focus on mobile(Android/IOS) gles3.0+
 * Use native c/c++ and pure gles api
 * Use [GLM](http://glm.g-truc.net/0.9.6/index.html) for Math
+* Use [assimp](https://github.com/assimp/assimp) for asset import
+* Use [stb_image](https://github.com/nothings/stb) for image import
 * Nice framework and examples borrow from a couple of projects (see below)
 * Plenty examples in a single app for demo
 * Use Gradle for Building On Android, easy to build
@@ -28,7 +30,12 @@ This repository contains the sample code for learning opengl ES 3.0 using native
 to be add..
 
 ## Sample ##
-to be add..
+
+*below is two running demo from the branch "branch-c", witch is sample of simple vertex shader and basic light modal*
+
+ ![colorcube](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/colorcube.gif)
+ 
+ ![diffusetorse](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/diffusetorse.gif)
 
 ## Support Platforms ##
 This project currently target on Android only, IOS support will be in consider in future
