@@ -15,8 +15,9 @@ class TorusDiffuse : public ESScene
 private:
     ESProgram prog;
 
-    int width, height;
     VBOTorus *torus;
+
+    float angle;
 
     mat4 model;
     mat4 view;
@@ -32,7 +33,7 @@ public:
     void initScene(ESContext *esContext);
     void update(ESContext *esContext, float t );
     void render(ESContext *esContext);
-    void resize(ESContext *esContext, int width, int height);
+    void resize(ESContext *esContext);
 };
 
 #endif // TORUSDIFFUSE_H

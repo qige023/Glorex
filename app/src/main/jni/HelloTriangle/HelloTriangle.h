@@ -10,14 +10,12 @@ using glm::mat4;
 
 class HelloTriangle: public ESScene {
 private:
-    int width, height;
+
     GLuint vboHandles[2];
     GLuint vaoHandle;
     ESProgram prog;
 
     void compileAndLinkShader();
-    void linkMe(GLint vertShader, GLint fragShader);
-
 public:
     HelloTriangle();
     ~HelloTriangle();
@@ -25,7 +23,7 @@ public:
     void initScene(ESContext *esContext);
     void update(ESContext *esContext, float t );
     void render(ESContext *esContext);
-    void resize(ESContext *esContext, int width, int height);
+    void resize(ESContext *esContext);
 };
 
 #endif // HELLOTRIANGLE_H

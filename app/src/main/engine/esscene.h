@@ -29,7 +29,7 @@ public:
     /**
      Called when screen is resized
      */
-    virtual void resize(ESContext *esContext, int width, int height) = 0;
+    virtual void resize(ESContext *esContext) = 0;
 
     void animate(bool value) {
         m_animate = value;

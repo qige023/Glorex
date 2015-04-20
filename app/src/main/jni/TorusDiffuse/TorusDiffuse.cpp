@@ -15,6 +15,7 @@ using glm::vec4;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 TorusDiffuse::TorusDiffuse() {
 }
@@ -27,39 +28,46 @@ void TorusDiffuse::initScene(ESContext *esContext) {
 
     compileAndLinkShader();
 
-    torus = new VBOTorus(0.5f, 0.2f, 40, 40);
+    // Enables depth-buffer for hidden surface removal
+    glEnable(GL_DEPTH_TEST);
+
+    // The type of depth testing to do
+    glDepthFunc(GL_LEQUAL);
+
+    angle = 45.0f;
+    torus = new VBOTorus(0.5f, 0.2f, 60, 60);
 
     model = mat4(1.0f);
-//    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f, 0.0f, 0.0f));
-//    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f, 1.0f, 0.0f));
-//    view = glm::lookAt(vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f),
-//            vec3(0.0f, 1.0f, 0.0f));
+//    model *= glm::translate(vec3(1.0,1.0,0.0));
+    model *= glm::rotate(glm::radians(angle), vec3(-1.0f,1.0f,0.0f));
+    cout << "Model Matrix" << glm::to_string(model) << endl;
+
     view = mat4(1.0f);
-    projection = mat4(1.0f);
+    view *= glm::lookAt(vec3(0.0f,0.0f,2.5f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
+    cout << "View Matrix" << glm::to_string(view) << endl;
+
+    projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
+            0.1f, 100.0f);
+    cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
     prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Ld", 1.0f, 1.0f, 1.0f);
-    prog.setUniform("LightPosition", view * vec4(5.0f, 5.0f, 2.0f, 1.0f));
+    prog.setUniform("LightPosition", view * vec4(5.0f,5.0f,2.0f,1.0f) );
 
     // Set background color
     glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 }
 
 void TorusDiffuse::update(ESContext *esContext, float deltaTime) {
+    // 40 degree per second
+    angle += deltaTime * 40.0f;
+    model = mat4(1.0f);
+    model *= glm::rotate(glm::radians(angle), vec3(-1.0f,1.0f,0.0f));
 }
 
 void TorusDiffuse::render(ESContext *esContext) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Set depth's clear-value to farthest
-    glClearDepthf(1.0f);
-
-    // Enables depth-buffer for hidden surface removal
-    glEnable(GL_DEPTH_TEST);
-
-    // The type of depth testing to do
-    glDepthFunc(GL_LEQUAL);
 
     setMatrices();
 
@@ -74,12 +82,10 @@ void TorusDiffuse::setMatrices() {
     prog.setUniform("MVP", projection * mv);
 }
 
-void TorusDiffuse::resize(ESContext *esContext, int w, int h) {
-    glViewport(0, 0, w, h);
-    width = w;
-    height = h;
-    projection = glm::perspective(glm::radians(70.0f), (float) w / h, 0.3f,
-            100.0f);
+void TorusDiffuse::resize(ESContext *esContext) {
+    glViewport(0, 0, esContext->width, esContext->height);
+    projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
+                0.1f, 100.0f);
 }
 
 void TorusDiffuse::compileAndLinkShader() {

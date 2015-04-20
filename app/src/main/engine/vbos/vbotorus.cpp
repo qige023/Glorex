@@ -60,17 +60,26 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
 
     int size;
     glGetBufferParameteriv (GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-    cout << "vertex buffer size:"<< size <<endl;
+    cout << "vertex position size:"<< size <<endl;
 
     glEnableVertexAttribArray(1);  // Vertex normal
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
     glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
 
+    glGetBufferParameteriv (GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+    cout << "vertex normal size:"<< size <<endl;
+
     glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
     glEnableVertexAttribArray(2);  // Texture coords
     glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
 
+    glGetBufferParameteriv (GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+    cout << "Texture coords size:"<< size <<endl;
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
+
+    glGetBufferParameteriv (GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+    cout << "Vertex index size:"<< size <<endl;
 
     glBindVertexArray(0);
 }

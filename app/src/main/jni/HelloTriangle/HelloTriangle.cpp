@@ -87,9 +87,9 @@ void HelloTriangle::render(ESContext *esContext)
     glDrawArrays(GL_TRIANGLES, 0, 3 );
 }
 
-void HelloTriangle::resize(ESContext *esContext, int w, int h)
+void HelloTriangle::resize(ESContext *esContext)
 {
-    glViewport(0,0,w,h);
+    glViewport(0,0,esContext->width,esContext->height);
 }
 
 ESScene *esCreateScene(ESContext *esContext) {
