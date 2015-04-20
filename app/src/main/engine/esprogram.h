@@ -30,10 +30,6 @@ namespace ESShader {
   enum ESShaderType {
     VERTEX = GL_VERTEX_SHADER, 
     FRAGMENT = GL_FRAGMENT_SHADER
-//    GEOMETRY = GL_GEOMETRY_SHADER,
-//    TESS_CONTROL = GL_TESS_CONTROL_SHADER,
-//    TESS_EVALUATION = GL_TESS_EVALUATION_SHADER,
-//    COMPUTE = GL_COMPUTE_SHADER
   };
 };
 
@@ -87,6 +83,7 @@ class ESProgram
 //    void   printActiveAttribs();
 
     const char * getTypeString( GLenum type );
+    void   getAndPrintGlError();
 };
 
 #endif // ESPROGRAM_H

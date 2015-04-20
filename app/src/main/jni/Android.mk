@@ -1,5 +1,6 @@
 #include $(call all-subdir-makefiles)
-LOCAL_PATH:= $(call my-dir)
+JNI_ROOT:= $(call my-dir)
 include $(CLEAR_VARS)
 
-include $(LOCAL_PATH)/TorusDiffuse/Android.mk
+include $(JNI_ROOT)/HelloTriangle/Android.mk
+include $(JNI_ROOT)/TorusDiffuse/Android.mk

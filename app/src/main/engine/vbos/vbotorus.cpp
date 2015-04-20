@@ -6,6 +6,11 @@
 #include <cstdio>
 #include <cmath>
 
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
 VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings) :
         rings(nrings), sides(nsides)
 {
@@ -52,6 +57,10 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
     glEnableVertexAttribArray(0);  // Vertex position
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
     glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+
+    int size;
+    glGetBufferParameteriv (GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+    cout << "vertex buffer size:"<< size <<endl;
 
     glEnableVertexAttribArray(1);  // Vertex normal
     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);

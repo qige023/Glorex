@@ -116,7 +116,9 @@ GLboolean ESUTIL_API esCreateWindow(ESContext *esContext, const char *title,
     esContext->height = height;
 #endif
 
+
     esContext->eglDisplay = eglGetDisplay(esContext->eglNativeDisplay);
+
     if (esContext->eglDisplay == EGL_NO_DISPLAY) {
         return GL_FALSE;
     }

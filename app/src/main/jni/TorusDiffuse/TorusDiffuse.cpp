@@ -23,41 +23,34 @@ TorusDiffuse::~TorusDiffuse() {
 }
 
 void TorusDiffuse::initScene(ESContext *esContext) {
-    cout << "exec TorusDiffuse::initScene ..." << endl;
-
-    // Set backgroundColor
-    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    cout << "exec TorusDiffuse::initScene" << endl;
 
     compileAndLinkShader();
 
-    glEnable(GL_DEPTH_TEST);
-
-    torus = new VBOTorus(0.7f, 0.3f, 30, 30);
+    torus = new VBOTorus(0.5f, 0.2f, 40, 40);
 
     model = mat4(1.0f);
-    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f, 0.0f, 0.0f));
-    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f, 1.0f, 0.0f));
-    view = glm::lookAt(vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f),
-            vec3(0.0f, 1.0f, 0.0f));
+//    model *= glm::rotate(glm::radians(-35.0f), vec3(1.0f, 0.0f, 0.0f));
+//    model *= glm::rotate(glm::radians(35.0f), vec3(0.0f, 1.0f, 0.0f));
+//    view = glm::lookAt(vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 0.0f),
+//            vec3(0.0f, 1.0f, 0.0f));
+    view = mat4(1.0f);
     projection = mat4(1.0f);
 
     prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
     prog.setUniform("Ld", 1.0f, 1.0f, 1.0f);
     prog.setUniform("LightPosition", view * vec4(5.0f, 5.0f, 2.0f, 1.0f));
 
+    // Set background color
+    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 }
 
 void TorusDiffuse::update(ESContext *esContext, float deltaTime) {
-
 }
 
 void TorusDiffuse::render(ESContext *esContext) {
-    cout << "Scene Torus Diffuse render..." << endl;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Set the viewport
-    glViewport(0, 0, esContext->width, esContext->height);
 
     // Set depth's clear-value to farthest
     glClearDepthf(1.0f);
@@ -90,7 +83,7 @@ void TorusDiffuse::resize(ESContext *esContext, int w, int h) {
 }
 
 void TorusDiffuse::compileAndLinkShader() {
-    cout << "exec TorusDiffuse::compileAndLinkShader ..." << endl;
+    cout << "exec TorusDiffuse::compileAndLinkShader" << endl;
     try {
         cout << "Scene Torus Diffuse compile..." << endl;
         prog.compileShader("shaders/diffuse.vert");
@@ -105,6 +98,6 @@ void TorusDiffuse::compileAndLinkShader() {
 }
 
 ESScene *esCreateScene(ESContext *esContext) {
-    cout << "exec extern esCreateScene ..." << endl;
+    cout << "exec esCreateScene -> create scene TorusDiffuse" << endl;
     return new TorusDiffuse();
 }

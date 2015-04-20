@@ -14,6 +14,7 @@
 #include <android/input.h>
 #include <android_native_app_glue.h>
 #include <time.h>
+#include <stdexcept>
 
 using std::cout;
 using std::cerr;
@@ -33,8 +34,12 @@ static int esMain(ESContext *esContext) {
 
     if(scene != NULL) {
         esContext->scene = scene;
-        esCreateWindow(esContext, "Simple VertexShader", 320, 240,
+        GLboolean result = esCreateWindow(esContext, "Simple VertexShader", 320, 240,
         ES_WINDOW_RGB | ES_WINDOW_DEPTH);
+        if (result != GL_TRUE) {
+           throw new std::runtime_error("Unable to create EGL native window.");
+           return false;
+        }
         scene->initScene(esContext);
         return TRUE;
     }
