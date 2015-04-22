@@ -21,7 +21,6 @@ SimpleTexture::SimpleTexture() {
 }
 
 SimpleTexture::~SimpleTexture() {
-    cout << "exec SimpleTexture::~SimpleTexture" << endl;
     glDeleteTextures(1, &texId);
 }
 
@@ -92,9 +91,8 @@ void SimpleTexture::resize(ESContext *esContext) {
 void SimpleTexture::compileAndLinkShader() {
     cout << "exec SimpleTexture::compileAndLinkShader" << endl;
     try {
-        cout << "Scene Simpe Texture compile..." << endl;
-        prog.compileShader("shaders/simpletexture.vert");
-        prog.compileShader("shaders/simpletexture.frag");
+        prog.compileShader("shader/simpletexture.vert");
+        prog.compileShader("shader/simpletexture.frag");
         prog.link();
         prog.validate();
         prog.use();

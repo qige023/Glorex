@@ -15,6 +15,8 @@ private:
     GLuint vaoHandle;
     ESProgram prog;
 
+    mat4 projection;
+
     void compileAndLinkShader();
 public:
     HelloTriangle();

@@ -89,11 +89,10 @@ void TorusDiffuse::resize(ESContext *esContext) {
 }
 
 void TorusDiffuse::compileAndLinkShader() {
-    cout << "exec TorusDiffuse::compileAndLinkShader" << endl;
     try {
         cout << "Scene Torus Diffuse compile..." << endl;
-        prog.compileShader("shaders/diffuse.vert");
-        prog.compileShader("shaders/diffuse.frag");
+        prog.compileShader("shader/diffuse.vert");
+        prog.compileShader("shader/diffuse.frag");
         prog.link();
         prog.validate();
         prog.use();

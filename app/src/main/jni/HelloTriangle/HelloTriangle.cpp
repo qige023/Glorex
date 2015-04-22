@@ -13,6 +13,10 @@ using std::endl;
 using glm::vec3;
 using glm::vec4;
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 HelloTriangle::HelloTriangle() { }
 
 HelloTriangle::~HelloTriangle() { }
@@ -20,9 +24,8 @@ HelloTriangle::~HelloTriangle() { }
 void HelloTriangle::compileAndLinkShader() {
     cout << "exec HelloTriangle::compileAndLinkShader" << endl;
     try {
-        cout << "Scene Torus Diffuse compile..." << endl;
-        prog.compileShader("shaders/basic.vert");
-        prog.compileShader("shaders/basic.frag");
+        prog.compileShader("shader/basic.vert");
+        prog.compileShader("shader/basic.frag");
         prog.link();
         prog.validate();
         prog.use();
@@ -40,6 +43,7 @@ void HelloTriangle::initScene(ESContext *esContext)
         -0.8f, -0.8f, 0.0f,
          0.8f, -0.8f, 0.0f,
          0.0f,  0.8f, 0.0f };
+
     float colorData[] = {
         1.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
@@ -81,6 +85,15 @@ void HelloTriangle::update(ESContext *esContext, float t )
 void HelloTriangle::render(ESContext *esContext)
 {
     glClear(GL_COLOR_BUFFER_BIT);
+
+    float aspect = (float) esContext->width / esContext->height;
+
+    projection = mat4(1.0f);
+    projection *= glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+    cout << "Projection Matrix" << glm::to_string(projection) << endl;
+
+    //we omit model and view matrix , they are by default mat4(1.0f)
+    prog.setUniform("MVP", projection);
 
     glBindVertexArray(vaoHandle);
 
