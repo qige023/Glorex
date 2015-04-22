@@ -1,8 +1,6 @@
-LOCAL_PATH := $(call my-dir)
-COMMON_PATH			:= ../../common
-COMMON_INC_PATH		:= src/main/common/include
-TOOLS_INC_PATH      := src/main/tools/include
-COMMON_SRC_PATH		:= $(COMMON_PATH)/source
+LOCAL_PATH          := $(call my-dir)
+ENGINE_PATH			:= ../../engine
+ENGINE_INC_PATH		:= src/main/engine
 
 include $(CLEAR_VARS)
 
@@ -12,22 +10,31 @@ LOCAL_MODULE    := $(LIBRARY_NAME)
 
 LOCAL_CFLAGS    += -DANDROID
 
-LOCAL_SRC_FILES := $(COMMON_SRC_PATH)/esShader.c \
-				   $(COMMON_SRC_PATH)/esShapes.c \
-				   $(COMMON_SRC_PATH)/esTransform.c \
-				   $(COMMON_SRC_PATH)/esUtil.c \
-				   $(COMMON_SRC_PATH)/android_fopen.c \
-				   $(COMMON_SRC_PATH)/Android/esUtil_Android.c \
-				   $(LIBRARY_NAME).c
+LOCAL_SRC_FILES := $(ENGINE_PATH)/esprogram.cpp \
+				   $(ENGINE_PATH)/esutil.cpp \
+				   $(ENGINE_PATH)/android/esutil_android.cpp \
+				   $(ENGINE_PATH)/android/fopen_android.c \
+				   $(ENGINE_PATH)/loader/bmpreader.cpp \
+				   $(ENGINE_PATH)/vbos/drawable.cpp \
+				   $(ENGINE_PATH)/vbos/vbocube.cpp \
+				   $(LIBRARY_NAME).cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
-                    $(COMMON_INC_PATH) \
-                    $(TOOLS_INC_PATH)
-
+                    $(ENGINE_INC_PATH) \
+                    $(ENGINE_INC_PATH)/android \
+                    $(ENGINE_INC_PATH)/vbos \
+                    $(ENGINE_INC_PATH)/tools \
+                    $(ENGINE_INC_PATH)/loader
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
 
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
+
+#The NDK toolchain supports C++ exceptions, since NDK r5, 
+#however all C++ sources are compiled with -fno-exceptions support by default, 
+#for compatibility reasons with previous releases.
+#To enable it, use the new LOCAL_CPP_FEATURES variable in your Android.mk, as in:
+LOCAL_CPP_FEATURES += exceptions
 
 include $(BUILD_SHARED_LIBRARY)
 

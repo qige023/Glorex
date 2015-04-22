@@ -1,10 +1,7 @@
 #ifndef BMPREADER_H_
 #define BMPREADER_H_
 
-#include <fstream>
-using std::ifstream;
-
-#include "cookbookogl.h"
+#include "esutil.h"
 
 class BMPReader {
 public:
@@ -20,7 +17,7 @@ public:
 	 * @param height the height in pixels of the image is stored here.
 	 * @return a pointer to the image data
 	 */
-	static GLubyte * load( const char * fileName, GLuint &width /*out*/, GLuint &height /*out*/ );
+	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ );
 
 	/**
 	 * Loads a BMP file into an OpenGL texture.  This method only supports
@@ -30,22 +27,13 @@ public:
 	 * @param height the height in pixels of the image is stored here.
 	 * @return the texture ID
 	 */
-	static GLuint loadTex( const char * fileName, GLuint &width /*out*/, GLuint &height /*out*/ );
+	static GLuint loadTex( const char * fileName, GLint &width /*out*/, GLint &height /*out*/, GLint &channels /*out*/ );
 	static GLuint loadTex( const char * fileName );
-private:
-	/**
-	 * Read a little-endian short (2 bytes) from stream and return
-	 * the value as an int.
-	 * @param stream the ifstream to read from.
-	 */
-	static int readShortLE(ifstream & stream);
 
-	/**
-	 * Read a little-endian int (4 bytes) from stream and return
-	 * the value.
-	 * @param stream the ifstream to read from.
-	 */
-	static int readIntLE( ifstream & stream );
+private:
+
+    static  GLubyte * flipImage( GLubyte *data, GLint width, GLint height, GLint channels);
+
 };
 
 #endif

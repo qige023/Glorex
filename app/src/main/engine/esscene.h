@@ -10,6 +10,9 @@ public:
             m_animate(true) {
     }
 
+    virtual ~ESScene() {
+    }
+
     /**
      Load textures, initialize shaders, etc.
      */

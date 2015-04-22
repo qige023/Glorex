@@ -1,6 +1,6 @@
-#include "TorusDiffuse.h"
-
+#include "SimpleTexture.h"
 #include "esutil.h"
+#include "loader/bmpreader.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -17,14 +17,16 @@ using glm::vec4;
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-TorusDiffuse::TorusDiffuse() {
+SimpleTexture::SimpleTexture() {
 }
 
-TorusDiffuse::~TorusDiffuse() {
+SimpleTexture::~SimpleTexture() {
+    cout << "exec SimpleTexture::~SimpleTexture" << endl;
+    glDeleteTextures(1, &texId);
 }
 
-void TorusDiffuse::initScene(ESContext *esContext) {
-    cout << "exec TorusDiffuse::initScene" << endl;
+void SimpleTexture::initScene(ESContext *esContext) {
+    cout << "exec SimpleTexture::initScene" << endl;
 
     compileAndLinkShader();
 
@@ -35,7 +37,11 @@ void TorusDiffuse::initScene(ESContext *esContext) {
     glDepthFunc(GL_LEQUAL);
 
     angle = 45.0f;
-    torus = new VBOTorus(0.5f, 0.2f, 60, 60);
+    cube = new VBOCube(1.0f);
+
+    // Load texture file
+    const char *texName = "media/texture/crate.bmp";
+    texId = BMPReader::loadTex(texName);
 
     model = mat4(1.0f);
 //    model *= glm::translate(vec3(1.0,1.0,0.0));
@@ -43,57 +49,52 @@ void TorusDiffuse::initScene(ESContext *esContext) {
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
     view = mat4(1.0f);
-    view *= glm::lookAt(vec3(0.0f,0.0f,2.5f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
+    view *= glm::lookAt(vec3(0.0f,0.0f,5.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
             0.1f, 100.0f);
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
-    prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
-    prog.setUniform("Ld", 1.0f, 1.0f, 1.0f);
-    prog.setUniform("LightPosition", view * vec4(5.0f,5.0f,2.0f,1.0f) );
+    prog.setUniform("SampleTexture", 0);
 
     // Set background color
-    glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
-void TorusDiffuse::update(ESContext *esContext, float deltaTime) {
+void SimpleTexture::update(ESContext *esContext, float deltaTime) {
+
     // 40 degree per second
     angle += deltaTime * 40.0f;
     model = mat4(1.0f);
     model *= glm::rotate(glm::radians(angle), vec3(-1.0f,1.0f,0.0f));
 }
 
-void TorusDiffuse::render(ESContext *esContext) {
+void SimpleTexture::render(ESContext *esContext) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     setMatrices();
 
-    torus->render();
+    cube->render();
 }
 
-void TorusDiffuse::setMatrices() {
-    mat4 mv = view * model;
-    prog.setUniform("ModelViewMatrix", mv);
-    prog.setUniform("NormalMatrix",
-            mat3(vec3(mv[0]), vec3(mv[1]), vec3(mv[2])));
-    prog.setUniform("MVP", projection * mv);
+void SimpleTexture::setMatrices() {
+    prog.setUniform("MVP", projection * view * model);
 }
 
-void TorusDiffuse::resize(ESContext *esContext) {
+void SimpleTexture::resize(ESContext *esContext) {
     glViewport(0, 0, esContext->width, esContext->height);
     projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
                 0.1f, 100.0f);
 }
 
-void TorusDiffuse::compileAndLinkShader() {
-    cout << "exec TorusDiffuse::compileAndLinkShader" << endl;
+void SimpleTexture::compileAndLinkShader() {
+    cout << "exec SimpleTexture::compileAndLinkShader" << endl;
     try {
-        cout << "Scene Torus Diffuse compile..." << endl;
-        prog.compileShader("shaders/diffuse.vert");
-        prog.compileShader("shaders/diffuse.frag");
+        cout << "Scene Simpe Texture compile..." << endl;
+        prog.compileShader("shaders/simpletexture.vert");
+        prog.compileShader("shaders/simpletexture.frag");
         prog.link();
         prog.validate();
         prog.use();
@@ -104,6 +105,6 @@ void TorusDiffuse::compileAndLinkShader() {
 }
 
 ESScene *esCreateScene(ESContext *esContext) {
-    cout << "exec esCreateScene -> create scene TorusDiffuse" << endl;
-    return new TorusDiffuse();
+    cout << "exec esCreateScene -> create scene SimpleTexture" << endl;
+    return new SimpleTexture();
 }
