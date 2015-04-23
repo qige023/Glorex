@@ -12,7 +12,7 @@ This repository contains the sample code for learning opengl ES 3.0 using native
 * Use [assimp](https://github.com/assimp/assimp) for asset import
 * Use [stb_image](https://github.com/nothings/stb) for image import
 * Nice framework and examples borrow from a couple of projects (see below)
-* Plenty examples in a single app for demo
+* Build once, get all! Plenty examples just in a single app
 * Use Gradle for Building On Android, easy to build
 
 *Framework code inspired by:*
@@ -20,11 +20,12 @@ This repository contains the sample code for learning opengl ES 3.0 using native
 * [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
 * [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
 
-*Examples are inspired by:*
+*Examples and image assets mostly borrow from:*
 
 * [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
 * [Nehe OpenGL's Lesson](http://nehe.gamedev.net/)
 * [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
+* [Learn Opengl](http://www.learnopengl.com/)
 
 ## Content ##
 to be add..
