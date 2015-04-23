@@ -77,6 +77,7 @@ void HelloTriangle::initScene(ESContext *esContext)
 
     glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
 }
+
 void HelloTriangle::update(ESContext *esContext, float t )
 {
 
@@ -89,8 +90,15 @@ void HelloTriangle::render(ESContext *esContext)
     float aspect = (float) esContext->width / esContext->height;
 
     projection = mat4(1.0f);
-    projection *= glm::ortho(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
-    cout << "Projection Matrix" << glm::to_string(projection) << endl;
+
+    //make sure the whole triangle is in the scene and keep its ratio
+    if (esContext->width > esContext-> height) {
+        projection *= glm::ortho(-((float)esContext->width / esContext-> height)
+                , ((float)esContext->width / esContext-> height), -1.0f, 1.0f, -1.0f, 1.0f);
+    } else {
+        projection *= glm::ortho(-1.0f, 1.0f, -((float)esContext->height / esContext-> width)
+                , ((float)esContext->height / esContext-> width), -1.0f, 1.0f);
+    }
 
     //we omit model and view matrix , they are by default mat4(1.0f)
     prog.setUniform("MVP", projection);

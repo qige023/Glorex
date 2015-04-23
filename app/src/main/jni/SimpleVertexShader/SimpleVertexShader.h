@@ -1,19 +1,22 @@
-#ifndef TORUSDIFFUSE_H
-#define TORUSDIFFUSE_H
+#ifndef SimpleVertexShader_H
+#define SimpleVertexShader_H
+
+#include "vbos/vbocube.h"
 
 #include "esscene.h"
 #include "esprogram.h"
-#include "vbos/vbotorus.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
 
-class TorusDiffuse : public ESScene
+class SimpleVertexShader : public ESScene
 {
 private:
     ESProgram prog;
 
-    VBOTorus *torus;
+    VBOCube *cube;
+
+    GLuint texId;
 
     float angle;
 
@@ -25,8 +28,8 @@ private:
     void compileAndLinkShader();
 
 public:
-    TorusDiffuse();
-    ~TorusDiffuse();
+    SimpleVertexShader();
+    ~SimpleVertexShader();
 
     void initScene(ESContext *esContext);
     void update(ESContext *esContext, float t );
@@ -34,4 +37,4 @@ public:
     void resize(ESContext *esContext);
 };
 
-#endif // TORUSDIFFUSE_H
+#endif // SimpleVertexShader_H

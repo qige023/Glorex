@@ -1,10 +1,9 @@
-#include "SimpleTexture.h"
 #include "esutil.h"
-#include "loader/bmpreader.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include "SimpleVertexShader.h"
 
 using std::cout;
 using std::cerr;
@@ -17,15 +16,14 @@ using glm::vec4;
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-SimpleTexture::SimpleTexture() {
+SimpleVertexShader::SimpleVertexShader() {
 }
 
-SimpleTexture::~SimpleTexture() {
-    glDeleteTextures(1, &texId);
+SimpleVertexShader::~SimpleVertexShader() {
 }
 
-void SimpleTexture::initScene(ESContext *esContext) {
-    cout << "exec SimpleTexture::initScene" << endl;
+void SimpleVertexShader::initScene(ESContext *esContext) {
+    cout << "exec SimpleVertexShader::initScene" << endl;
 
     compileAndLinkShader();
 
@@ -38,12 +36,7 @@ void SimpleTexture::initScene(ESContext *esContext) {
     angle = 0.0f;
     cube = new VBOCube(1.0f);
 
-    // Load texture file
-    const char *texName = "media/texture/crate.bmp";
-    texId = BMPReader::loadTex(texName);
-
     model = mat4(1.0f);
-//    model *= glm::translate(vec3(1.0,1.0,0.0));
     model *= glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,1.0f));
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
@@ -61,7 +54,7 @@ void SimpleTexture::initScene(ESContext *esContext) {
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
-void SimpleTexture::update(ESContext *esContext, float deltaTime) {
+void SimpleVertexShader::update(ESContext *esContext, float deltaTime) {
 
     // 40 degree per second
     angle += deltaTime * 40.0f;
@@ -69,7 +62,7 @@ void SimpleTexture::update(ESContext *esContext, float deltaTime) {
     model *= glm::rotate(glm::radians(angle), vec3(-1.0f,1.0f,0.0f));
 }
 
-void SimpleTexture::render(ESContext *esContext) {
+void SimpleVertexShader::render(ESContext *esContext) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -78,21 +71,21 @@ void SimpleTexture::render(ESContext *esContext) {
     cube->render();
 }
 
-void SimpleTexture::setMatrices() {
+void SimpleVertexShader::setMatrices() {
     prog.setUniform("MVP", projection * view * model);
 }
 
-void SimpleTexture::resize(ESContext *esContext) {
+void SimpleVertexShader::resize(ESContext *esContext) {
     glViewport(0, 0, esContext->width, esContext->height);
     projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
                 0.1f, 100.0f);
 }
 
-void SimpleTexture::compileAndLinkShader() {
-    cout << "exec SimpleTexture::compileAndLinkShader" << endl;
+void SimpleVertexShader::compileAndLinkShader() {
+    cout << "exec SimpleVertexShader::compileAndLinkShader" << endl;
     try {
-        prog.compileShader("shader/simpletexture.vert");
-        prog.compileShader("shader/simpletexture.frag");
+        prog.compileShader("shader/simplevertexshader.vert");
+        prog.compileShader("shader/simplevertexshader.frag");
         prog.link();
         prog.validate();
         prog.use();
@@ -103,6 +96,6 @@ void SimpleTexture::compileAndLinkShader() {
 }
 
 ESScene *esCreateScene(ESContext *esContext) {
-    cout << "exec esCreateScene -> create scene SimpleTexture" << endl;
-    return new SimpleTexture();
+    cout << "exec esCreateScene -> create scene SimpleVertexShader" << endl;
+    return new SimpleVertexShader();
 }

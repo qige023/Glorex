@@ -1,9 +1,8 @@
 #ifndef SimpleTexture_H
 #define SimpleTexture_H
 
-#include "vbocube.h"
+#include "vbos/vbocube.h"
 
-#include "util.h"
 #include "esscene.h"
 #include "esprogram.h"
 
