@@ -1,6 +1,8 @@
 #ifndef VBOSHAPE_H
 #define VBOSHAPE_H
 
+#include "esutil.h"
+
 class VBOShape {
 
 private:
@@ -12,9 +14,8 @@ private:
 
 public:
 
-    VBOShape::VBOShape(float *vertexArray, bool enableNormal,
-            bool enableTexcoord, bool enableTexcolor, GLsizei stride,
-            GLuint *vertexIndex);
+    VBOShape(float *vertexArray, bool enableNormal, bool enableTexcoord,
+            bool enableTexcolor, GLsizei stride, GLuint *vertexIndex);
     ~VBOShape();
 
     void render();

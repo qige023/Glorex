@@ -1,7 +1,5 @@
 #include "vboshape.h"
 
-#include "esutil.h"
-
 VBOShape::VBOShape(float *vertexArray, bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLsizei stride, GLuint *vertexIndex) {
 
     vaoHandle = vboHandle = vboElementHandle = NULL;
@@ -12,7 +10,7 @@ VBOShape::VBOShape(float *vertexArray, bool enableNormal, bool enableTexcoord, b
     GLuint currentStride = 0;
     glGenVertexArrays(1, &vaoHandle);
     glGenBuffers(1, &vboHandle);
-    glBindVertexArray(planeVAO);
+    glBindVertexArray(vaoHandle);
     glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), &vertexArray, GL_STATIC_DRAW);
 

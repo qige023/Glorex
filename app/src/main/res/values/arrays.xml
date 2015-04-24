@@ -5,15 +5,15 @@
         <item>Simple VertexShader</item>
         <item>Simple Texture</item>
         <item>Instancing</item>
+        <item>Blending Window</item>
         <item>Torus Diffuse(spot light)</item>
-        <item>Polygon2D</item>
     </string-array>
     <string-array name="library_names">
         <item>HelloTriangle</item>
         <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
         <item>Instancing</item>
+        <item>BlendingWindow</item>
         <item>TorusDiffuse</item>
-        <item>Polygon2D</item>
     </string-array>
 </resources>
