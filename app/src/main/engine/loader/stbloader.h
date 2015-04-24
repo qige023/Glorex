@@ -2,12 +2,14 @@
 #define BMPREADER_H_
 
 #include "esutil.h"
-
-class BMPReader {
+/**
+ * A Simple Wrapper for lib stb_image
+ */
+class STBLoader {
 public:
 
 	/**
-	 * Loads a BMP file into an array suitable for loading into an
+	 * Loads a image file into an array suitable for loading into an
 	 * OpenGL texture.  This method only supports 24 or 32 bpp images.
 	 * The array that is returned should be deleted when one is finished
 	 * with it.  Data is stored in the array as RGBA, 4 bytes per
@@ -20,7 +22,7 @@ public:
 	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ );
 
 	/**
-	 * Loads a BMP file into an OpenGL texture.  This method only supports
+	 * Loads a image into an OpenGL texture.  This method only supports
 	 * 24 or 32 bpp images.
 	 * @param fileName the file name of the BMP file.
 	 * @param width the width in pixels of the image is stored here.

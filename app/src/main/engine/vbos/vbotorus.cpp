@@ -30,7 +30,6 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
     generateVerts(v, n, tex, el, outerRadius, innerRadius);
 
     // Create and populate the buffer objects
-    unsigned int handle[4];
     glGenBuffers(4, handle);
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
@@ -82,6 +81,13 @@ VBOTorus::VBOTorus(float outerRadius, float innerRadius, int nsides, int nrings)
     cout << "Vertex index size:"<< size <<endl;
 
     glBindVertexArray(0);
+}
+
+VBOTorus::~VBOTorus() {
+    glDeleteVertexArrays(1, &vaoHandle);
+    for (int i = 1; i < 4; i++) {
+        glDeleteBuffers(1, &handle[i]);
+    }
 }
 
 void VBOTorus::render() const {

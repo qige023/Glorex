@@ -20,6 +20,7 @@ SimpleVertexShader::SimpleVertexShader() {
 }
 
 SimpleVertexShader::~SimpleVertexShader() {
+    delete cube;
 }
 
 void SimpleVertexShader::initScene(ESContext *esContext) {

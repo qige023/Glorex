@@ -119,7 +119,6 @@ VBOCube::VBOCube(float nsize) : size(nsize) {
     glGenVertexArrays( 1, &vaoHandle );
     glBindVertexArray(vaoHandle);
 
-    unsigned int handle[4];
     glGenBuffers(4, handle);
 
     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
@@ -141,6 +140,13 @@ VBOCube::VBOCube(float nsize) : size(nsize) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(GLuint), el, GL_STATIC_DRAW);
 
     glBindVertexArray(0);
+}
+
+VBOCube::~VBOCube() {
+    glDeleteVertexArrays(1, &vaoHandle);
+    for (int i = 1; i < 4; i++) {
+        glDeleteBuffers(1, &handle[i]);
+    }
 }
 
 void VBOCube::render() {

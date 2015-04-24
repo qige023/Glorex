@@ -16,7 +16,8 @@ private:
 
     VBOCube *cube;
 
-    GLuint texId;
+    GLuint texId1;
+    GLuint texId2;
 
     float angle;
 

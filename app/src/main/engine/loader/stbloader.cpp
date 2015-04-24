@@ -1,4 +1,4 @@
-#include "bmpreader.h"
+#include "stbloader.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #ifdef ANDROID
@@ -13,13 +13,14 @@ using std::endl;
 
 #include "stb_image.h"
 
-GLubyte* BMPReader::load(const char *filename, GLint &width,
+GLubyte* STBLoader::load(const char *filename, GLint &width,
         GLint &height, GLint &channels) {
 
     //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
     FILE *pFile = android_fopen(filename, "r");
 
-    GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, 0);
+    //always return RGB pixels for rendering
+    GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, 3);
 
     //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
     GLubyte *nBuffer = flipImage(buffer, width, height, channels);
@@ -30,22 +31,28 @@ GLubyte* BMPReader::load(const char *filename, GLint &width,
     return nBuffer;
 }
 
-GLuint BMPReader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels) {
+GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels) {
 
-    GLubyte * data = BMPReader::load(fName, width, height, chennels);
+    GLubyte * data = STBLoader::load(fName, width, height, chennels);
 
     if (data != NULL) {
         GLuint texID;
         glGenTextures(1, &texID);
-
+        // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
         glBindTexture(GL_TEXTURE_2D, texID);
         //This line hard code to GL_RGB, so 16 or 32 bit BMP (GL_RGBA mode)
         //is not ready for support
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                 GL_UNSIGNED_BYTE, data);
+        // Set our texture parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // Set texture filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
+        glGenerateMipmap(GL_TEXTURE_2D);
+        // Unbind texture when done, so we won't accidentily mess up our texture.
+        glBindTexture(GL_TEXTURE_2D, 0);
         delete[] data;
 
         return texID;
@@ -54,12 +61,12 @@ GLuint BMPReader::loadTex(const char* fName, GLint & width, GLint &height, GLint
     return 0;
 }
 
-GLuint BMPReader::loadTex(const char* fName) {
+GLuint STBLoader::loadTex(const char* fName) {
     GLint w, h, c;
-    return BMPReader::loadTex(fName, w, h, c);
+    return STBLoader::loadTex(fName, w, h, c);
 }
 
-GLubyte *BMPReader::flipImage(GLubyte *data, GLint width, GLint height, GLint channels) {
+GLubyte *STBLoader::flipImage(GLubyte *data, GLint width, GLint height, GLint channels) {
     /*  create a copy the image data    */
     GLubyte *img = (GLubyte *)malloc( width*height*channels );
     memcpy( img, data, width*height*channels );

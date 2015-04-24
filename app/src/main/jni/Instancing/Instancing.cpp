@@ -1,6 +1,6 @@
-#include "esutil.h"
-#include "loader/bmpreader.h"
+#include "stbloader.h"
 
+#include "esutil.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -22,6 +22,7 @@ Instancing::Instancing() {
 
 Instancing::~Instancing() {
     glDeleteTextures(1, &texId);
+    delete cube;
 }
 
 void Instancing::initScene(ESContext *esContext) {
@@ -67,7 +68,7 @@ void Instancing::initScene(ESContext *esContext) {
 
     // Load texture file
     const char *texName = "media/texture/crate.bmp";
-    texId = BMPReader::loadTex(texName);
+    texId = STBLoader::loadTex(texName);
 
     view = mat4(1.0f);
     view *= glm::lookAt(vec3(0.0f,0.0f,10.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -77,7 +78,10 @@ void Instancing::initScene(ESContext *esContext) {
             0.1f, 100.0f);
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texId);
     prog.setUniform("SampleTexture", 0);
+
 
     // Set background color
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);

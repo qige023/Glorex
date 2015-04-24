@@ -21,6 +21,7 @@ TorusDiffuse::TorusDiffuse() {
 }
 
 TorusDiffuse::~TorusDiffuse() {
+    delete torus;
 }
 
 void TorusDiffuse::initScene(ESContext *esContext) {

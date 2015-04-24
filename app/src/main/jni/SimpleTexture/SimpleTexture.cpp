@@ -1,10 +1,10 @@
 #include "SimpleTexture.h"
 #include "esutil.h"
-#include "loader/bmpreader.h"
-
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+
+#include "loader/stbloader.h"
 
 using std::cout;
 using std::cerr;
@@ -21,7 +21,9 @@ SimpleTexture::SimpleTexture() {
 }
 
 SimpleTexture::~SimpleTexture() {
-    glDeleteTextures(1, &texId);
+    glDeleteTextures(1, &texId1);
+    glDeleteTextures(1, &texId2);
+    delete cube;
 }
 
 void SimpleTexture::initScene(ESContext *esContext) {
@@ -39,11 +41,13 @@ void SimpleTexture::initScene(ESContext *esContext) {
     cube = new VBOCube(1.0f);
 
     // Load texture file
-    const char *texName = "media/texture/crate.bmp";
-    texId = BMPReader::loadTex(texName);
+    const char *texName1 = "media/texture/crate.bmp";
+    texId1 = STBLoader::loadTex(texName1);
+
+    const char *texName2 = "media/texture/awesomeface.png";
+    texId2 = STBLoader::loadTex(texName2);
 
     model = mat4(1.0f);
-//    model *= glm::translate(vec3(1.0,1.0,0.0));
     model *= glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,1.0f));
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
@@ -54,8 +58,6 @@ void SimpleTexture::initScene(ESContext *esContext) {
     projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
             0.1f, 100.0f);
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
-
-    prog.setUniform("SampleTexture", 0);
 
     // Set background color
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -72,6 +74,14 @@ void SimpleTexture::update(ESContext *esContext, float deltaTime) {
 void SimpleTexture::render(ESContext *esContext) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Bind Textures using texture units
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texId1);
+    prog.setUniform("SampleTexture1", 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texId2);
+    prog.setUniform("SampleTexture2", 1);
 
     setMatrices();
 
@@ -92,7 +102,7 @@ void SimpleTexture::compileAndLinkShader() {
     cout << "exec SimpleTexture::compileAndLinkShader" << endl;
     try {
         prog.compileShader("shader/simpletexture.vert");
-        prog.compileShader("shader/simpletexture.frag");
+        prog.compileShader("shader/simpletexture2.frag");
         prog.link();
         prog.validate();
         prog.use();
