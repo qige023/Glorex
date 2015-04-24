@@ -19,7 +19,7 @@ public:
 	 * @param height the height in pixels of the image is stored here.
 	 * @return a pointer to the image data
 	 */
-	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ );
+	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ , GLint req_comp);
 
 	/**
 	 * Loads a image into an OpenGL texture.  This method only supports
@@ -29,8 +29,8 @@ public:
 	 * @param height the height in pixels of the image is stored here.
 	 * @return the texture ID
 	 */
-	static GLuint loadTex( const char * fileName, GLint &width /*out*/, GLint &height /*out*/, GLint &channels /*out*/ );
-	static GLuint loadTex( const char * fileName );
+	static GLuint loadTex( const char * fileName, GLint &width /*out*/, GLint &height /*out*/, GLint &channels /*out*/ , GLboolean alpha);
+	static GLuint loadTex( const char * fileName, GLboolean alpha = false );
 
 private:
 

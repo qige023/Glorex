@@ -1,10 +1,6 @@
 #ifndef ESPROGRAM_H
 #define ESPROGRAM_H
 
-#ifdef WIN32
-#pragma warning( disable : 4290 )
-#endif
-
 #include "esutil.h"
 
 #include <string>
