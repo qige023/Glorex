@@ -36,6 +36,8 @@ private:
     mat4 view;
     mat4 projection;
 
+    vec3 cameraPosition;
+
     vector<vec3> windowPostions;
     map<GLfloat, vec3> sortedWindowPostions;
 

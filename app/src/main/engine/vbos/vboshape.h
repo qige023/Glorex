@@ -2,23 +2,31 @@
 #define VBOSHAPE_H
 
 #include "esutil.h"
+#include "drawable.h"
 
-class VBOShape {
+class VBOShape : public Drawable {
 
 private:
-    unsigned int vaoHandle;
-    unsigned int vboHandle;
-    unsigned int vboElementHandle;
-    unsigned int vertexLength;
-    unsigned int vertexIndexLength;
+    GLuint vaoHandle;
+    GLuint vboHandle;
+    GLuint vboElementHandle;
+    GLsizei vertexLength;
+    GLsizei vertexIndexLength;
+
+    void init(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIndex, GLsizei vertexIndexLength,
+            bool enableNormal, bool enableTexcoord, bool enableTexcolor);
 
 public:
 
-    VBOShape(float *vertexArray, bool enableNormal, bool enableTexcoord,
-            bool enableTexcolor, GLsizei stride, GLuint *vertexIndex);
+    VBOShape(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIndex, GLsizei vertexIndexLength,
+            bool enableNormal, bool enableTexcoord, bool enableTexcolor);
+
+    VBOShape(GLfloat *vertexArray, GLsizei vertexLength,
+                bool enableNormal, bool enableTexcoord, bool enableTexcolor);
+
     ~VBOShape();
 
-    void render();
+    void render() const;
 };
 
 #endif // VBOSHAPE_H

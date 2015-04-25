@@ -5,11 +5,11 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "loader/stbloader.h"
-
 using std::cout;
 using std::cerr;
 using std::endl;
+
+#include "loader/stbloader.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -70,20 +70,14 @@ void BlendingWindow::initScene(ESContext *esContext) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     cube = new VBOCube(1.0f);
-    floor = new VBOShape(floorVertices, false, true, false, 5, NULL);
-    window = new VBOShape(windowVertices, false, true, false, 5, NULL);
+    floor = new VBOShape(floorVertices, 6, false, true, false);
+    window = new VBOShape(windowVertices, 6, false, true, false);
 
     cubeTexture = STBLoader::loadTex("media/texture/marble.jpg");
     floorTexture = STBLoader::loadTex("media/texture/metal.png");
     windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", true);
 
-    vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
-
-    // Sort windows
-    for (GLuint i = 0; i < windowPostions.size(); i++) {
-        GLfloat distance = glm::length(cameraPosition - windowPostions[i]);
-        sortedWindowPostions[distance] = windowPostions[i];
-    }
+    cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
 
     view = mat4(1.0f);
     view *= glm::lookAt(cameraPosition, vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -93,11 +87,15 @@ void BlendingWindow::initScene(ESContext *esContext) {
             0.1f, 100.0f);
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
-    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void BlendingWindow::update(ESContext *esContext, float deltaTime) {
-
+    // Sort windows
+    for (GLuint i = 0; i < windowPostions.size(); i++) {
+        GLfloat distance = glm::length(cameraPosition - windowPostions[i]);
+        sortedWindowPostions[distance] = windowPostions[i];
+    }
 }
 
 void BlendingWindow::render(ESContext *esContext) {
