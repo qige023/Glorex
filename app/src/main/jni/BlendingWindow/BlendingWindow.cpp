@@ -77,7 +77,7 @@ void BlendingWindow::initScene(ESContext *esContext) {
     floorTexture = STBLoader::loadTex("media/texture/metal.png");
     windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", true);
 
-    cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+    cameraPosition = glm::vec3(0.0f, 0.0f, 5.0f);
 
     view = mat4(1.0f);
     view *= glm::lookAt(cameraPosition, vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
@@ -142,7 +142,7 @@ void BlendingWindow::setMatrices() {
 
 void BlendingWindow::resize(ESContext *esContext) {
     glViewport(0, 0, esContext->width, esContext->height);
-    projection = glm::perspective(glm::radians(60.0f), (float) esContext->width / esContext->height,
+    projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
                 0.1f, 100.0f);
 }
 
