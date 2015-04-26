@@ -28,11 +28,15 @@ void android_fopen_set_asset_manager(AAssetManager* manager) {
   android_asset_manager = manager;
 }
 
-FILE* android_fopen(const char* fname, const char* mode) {
+FILE* android_fopen(const char* fname, const char* mode, long *length) {
   if(mode[0] == 'w') return NULL;
 
   AAsset* asset = AAssetManager_open(android_asset_manager, fname, 0);
   if(!asset) return NULL;
+
+  if(length != NULL) {
+      *length = AAsset_getLength(asset);
+  }
 
   return funopen(asset, android_read, android_write, android_seek, android_close);
 }

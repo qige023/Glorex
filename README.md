@@ -11,7 +11,7 @@ This repository contains the sample code for learning opengl ES 3.0 using native
 * Use [GLM](http://glm.g-truc.net/0.9.6/index.html) for Math
 * Use [assimp](https://github.com/assimp/assimp) for asset import
 * Use [stb_image](https://github.com/nothings/stb) for image import
-* Use [stb_truetype](https://github.com/nothings/stb) for ttf import
+* Use [freetype](http://www.freetype.org/) for ttf import
 * Nice framework and examples borrow from a couple of projects (see below)
 * Build once, get all! Plenty examples just in a single app
 * Use Gradle for Building On Android, easy to build

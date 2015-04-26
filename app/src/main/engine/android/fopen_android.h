@@ -12,7 +12,7 @@ extern "C" {
    we can pull things out of our packagesk APK */
 
 void android_fopen_set_asset_manager(AAssetManager* manager);
-FILE* android_fopen(const char* fname, const char* mode);
+FILE* android_fopen(const char* fname, const char* mode, long *length = NULL);
 
 #ifdef __cplusplus
 }

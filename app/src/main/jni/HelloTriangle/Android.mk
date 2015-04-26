@@ -20,11 +20,13 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(ENGINE_INC_PATH) \
                     $(ENGINE_INC_PATH)/android \
                     $(ENGINE_INC_PATH)/vbos \
-                    $(ENGINE_INC_PATH)/loader
+                    $(ENGINE_INC_PATH)/loader \
+                    $(ENGINE_INC_PATH)/freetype
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
 
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
+LOCAL_STATIC_LIBRARIES += freetype
 
 #The NDK toolchain supports C++ exceptions, since NDK r5, 
 #however all C++ sources are compiled with -fno-exceptions support by default, 
@@ -34,4 +36,6 @@ LOCAL_CPP_FEATURES += exceptions
 
 include $(BUILD_SHARED_LIBRARY)
 
+$(call import-module,freetype)
 $(call import-module,android/native_app_glue)
+

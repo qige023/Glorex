@@ -47,6 +47,7 @@ task ndkLibsToJar(type: Zip, dependsOn: 'ndkBuild', description: 'Create a JAR o
 task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
     def ndkDir = plugins.getPlugin('com.android.application').sdkHandler.ndkFolder
     commandLine "$ndkDir/ndk-build",
+            'NDK_MODULE_PATH=src/main/prebuild',
             'NDK_DEBUG=1',
             'V=1',
             'NDK_PROJECT_PATH=build',
