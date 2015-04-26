@@ -6,7 +6,7 @@
 //
 
 #include "esutil.h"
-#include <android/fopen_android.h>
+#include "esfile.h"
 #include "android/buf_android.hpp"
 
 #include <android/log.h>
@@ -30,7 +30,7 @@ static int esMain(ESContext *esContext) {
     cout << "exec esMain..." << endl;
     ESScene *scene = esCreateScene(esContext);
     AAssetManager *assetManager = ( AAssetManager * ) esContext->platformData;
-    android_fopen_set_asset_manager(assetManager);
+    ESFileWrapper::setAssetmanager(assetManager);
 
     if(scene != NULL) {
         esContext->scene = scene;

@@ -62,21 +62,6 @@
 /// \return GL_TRUE if window creation is succesful, GL_FALSE otherwise
 ESboolean ESUTIL_API esCreateWindow ( ESContext *esContext, const char *title, GLint width, GLint height, GLuint flags );
 
-//
-/// \brief Log a message to the debug output for the platform
-/// \param formatStr Format string for error log.
-//
-void ESUTIL_API esLogMessage ( const char *formatStr, ... );
-
-//
-/// \brief Loads a 8-bit, 24-bit or 32-bit TGA image from a file
-/// \param ioContext Context related to IO facility on the platform
-/// \param fileName Name of the file on disk
-/// \param width Width of loaded image in pixels
-/// \param height Height of loaded image in pixels
-///  \return Pointer to loaded image.  NULL on failure.
-//
-char *ESUTIL_API esLoadTGA ( void *ioContext, const char *fileName, int *width, int *height );
-
+void ESUTIL_API esRegisterScene(ESContext *esContext, ESScene *scene);
 
 #endif // ESUTIL_H

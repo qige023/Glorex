@@ -3,10 +3,7 @@
 #include <fstream>
 
 #include "esutil.h"
-#ifdef ANDROID
-#include "android/fopen_android.h"
-#endif
-
+#include "esfile.h"
 #include <iostream>
 
 using std::cout;
@@ -100,15 +97,8 @@ void ESProgram::compileShader(const char * fileName,
         }
     }
 
-
     char * buffer;
-    FILE *file;
-
-#ifdef ANDROID
-    file = android_fopen(fileName, "r");
-#else
-    file = fopen(fileName,"r");
-#endif
+    FILE *file = ESFileWrapper::esFopen(fileName, "r");
 
     if (!file) {
         string message = string("Unable to open: ") + fileName;

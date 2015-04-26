@@ -1,9 +1,10 @@
 #ifndef TORUSDIFFUSE_H
 #define TORUSDIFFUSE_H
 
+#include "vbos/vbotorus.h"
+
 #include "esscene.h"
 #include "esprogram.h"
-#include "vbos/vbotorus.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;

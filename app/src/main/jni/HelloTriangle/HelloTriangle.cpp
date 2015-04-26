@@ -1,7 +1,6 @@
 #include "HelloTriangle.h"
 
 #include "esutil.h"
-#include "android/fopen_android.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -43,23 +42,23 @@ void HelloTriangle::compileAndLinkShader() {
 void HelloTriangle::initScene(ESContext *esContext)
 {
     // FreeType
-    FT_Library ft;
-    // All functions return a value different than 0 whenever an error occurred
-    if (FT_Init_FreeType(&ft))
-        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-
-    long size = 0;
-    FILE *fontFile = android_fopen("font/OpenSans-Bold.ttf", "r", &size);
-    unsigned char* buffer = (char*) malloc (sizeof(char) *size);
-    fread( buffer, size, 1, fontFile);
-
-    // Load font as face
-    FT_Face face;
-    if (FT_New_Memory_Face(ft, buffer, size, 0, &face))
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-
-    // Set size to load glyphs as
-    FT_Set_Pixel_Sizes(face, 0, 48);
+//    FT_Library ft;
+//    // All functions return a value different than 0 whenever an error occurred
+//    if (FT_Init_FreeType(&ft))
+//        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+//
+//    long size = 0;
+//    FILE *fontFile = android_fopen("font/OpenSans-Bold.ttf", "r", &size);
+//    unsigned char* buffer = (char*) malloc (sizeof(char) *size);
+//    fread( buffer, size, 1, fontFile);
+//
+//    // Load font as face
+//    FT_Face face;
+//    if (FT_New_Memory_Face(ft, buffer, size, 0, &face))
+//        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+//
+//    // Set size to load glyphs as
+//    FT_Set_Pixel_Sizes(face, 0, 48);
 
     compileAndLinkShader();
     /////////////////// Create the VBO ////////////////////

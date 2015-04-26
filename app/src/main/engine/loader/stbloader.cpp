@@ -1,23 +1,21 @@
 #include "stbloader.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#ifdef ANDROID
-#include "android/fopen_android.h"
-#endif
+#include "esfile.h"
 
 #include <iostream>
-
 using std::cout;
 using std::cerr;
 using std::endl;
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 GLubyte* STBLoader::load(const char *filename, GLint &width,
         GLint &height, GLint &channels, GLint req_comp) {
 
+    FILE *pFile = NULL;
+
     //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
-    FILE *pFile = android_fopen(filename, "r");
+    pFile = ESFileWrapper::esFopen(filename, "r");
 
     GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, req_comp);
 
