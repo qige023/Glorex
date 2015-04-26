@@ -1,14 +1,12 @@
 #version 300 es  
 
-layout (location=0) in vec3 VertexPosition;
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+out vec2 TexCoords;
 
-out vec3 Color;
-
-uniform vec3 TextColor;
-uniform mat4 MVP;
+uniform mat4 projection;
 
 void main()
 {
-    Color = TextColor;
-    gl_Position = MVP * vec4(VertexPosition,1.0);
-}
+    gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+    TexCoords = vertex.zw;
+}  

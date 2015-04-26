@@ -116,11 +116,10 @@ void RenderingText::initScene(ESContext *esContext) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 }
 
-void RenderingText::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
-{
+void RenderingText::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
     // Activate corresponding render state
 //    shader.Use();
-    prog.setUniform("TextColor", color.x, color.y, color.z);
+    prog.setUniform("textColor", color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(vaoHandle);
 
@@ -167,17 +166,14 @@ void RenderingText::update(ESContext *esContext, float t ) {
 void RenderingText::render(ESContext *esContext) {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    float aspect = (float) esContext->width / esContext->height;
-
     projection = mat4(1.0f);
     projection *= glm::ortho(0.0f, static_cast<GLfloat>(esContext->width), 0.0f, static_cast<GLfloat>(esContext-> height));
-
 
     renderText("This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
     renderText("(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
     //we omit model and view matrix , they are by default mat4(1.0f)
-    prog.setUniform("MVP", projection);
+    prog.setUniform("projection", projection);
 
     glBindVertexArray(vaoHandle);
 
@@ -192,7 +188,7 @@ void RenderingText::compileAndLinkShader() {
     cout << "exec RenderingText::compileAndLinkShader" << endl;
     try {
         prog.compileShader("shader/rendertext.vert");
-        prog.compileShader("shader/basic.frag");
+        prog.compileShader("shader/rendertext.frag");
         prog.link();
         prog.validate();
         prog.use();
