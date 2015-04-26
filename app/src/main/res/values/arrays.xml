@@ -5,6 +5,7 @@
         <item>Simple VertexShader</item>
         <item>Simple Texture</item>
         <item>Instancing</item>
+        <item>Rendering Text</item>
         <item>Blending Window</item>
         <item>Torus Diffuse(spot light)</item>
     </string-array>
@@ -13,6 +14,7 @@
         <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
         <item>Instancing</item>
+        <item>RenderingText</item>
         <item>BlendingWindow</item>
         <item>TorusDiffuse</item>
     </string-array>

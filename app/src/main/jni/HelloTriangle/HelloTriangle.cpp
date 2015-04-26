@@ -1,7 +1,6 @@
 #include "HelloTriangle.h"
 
 #include "esutil.h"
-#include "esfile.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -17,10 +16,6 @@ using glm::vec4;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-// FreeType
-#include "ft2build.h"
-#include FT_FREETYPE_H
 
 HelloTriangle::HelloTriangle() { }
 
@@ -40,41 +35,21 @@ void HelloTriangle::compileAndLinkShader() {
     }
 }
 
-void HelloTriangle::initScene(ESContext *esContext)
-{
-    // FreeType
-    FT_Library ft;
-    // All functions return a value different than 0 whenever an error occurred
-    if (FT_Init_FreeType(&ft)) {
-        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-    }
-
-    esFile *fontFile = ESFileWrapper::esFileOpen("font/OpenSans-Bold.ttf");
-    long size = ESFileWrapper::esFileGetLength(fontFile);
-    unsigned char* buffer = (unsigned char*) malloc (sizeof(unsigned char) *size);
-    ESFileWrapper::esFileRead( fontFile, size, buffer);
-
-    // Load font as face
-    FT_Face face;
-    if (FT_New_Memory_Face(ft, buffer, size, 0, &face)) {
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-    }
-
-    // Set size to load glyphs as
-    FT_Set_Pixel_Sizes(face, 0, 48);
+void HelloTriangle::initScene(ESContext *esContext) {
 
     compileAndLinkShader();
     /////////////////// Create the VBO ////////////////////
     float positionData[] = {
         -0.8f, -0.8f, 0.0f,
          0.8f, -0.8f, 0.0f,
-         0.0f,  0.8f, 0.0f };
+         0.0f,  0.8f, 0.0f
+    };
 
     float colorData[] = {
         1.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f };
-
+        0.0f, 0.0f, 1.0f
+    };
 
     // Create and populate the buffer objects
     GLuint vboHandles[2];

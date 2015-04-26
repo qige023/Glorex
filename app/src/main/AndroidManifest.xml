@@ -74,6 +74,15 @@
                 android:name="android.app.lib_name"
                 android:value="TorusDiffuse" />
         </activity>
+        <activity
+            android:name=".stubs.RenderingText"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="RenderingText" />
+        </activity>
     </application>
 
 </manifest>

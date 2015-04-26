@@ -4,7 +4,7 @@ ENGINE_INC_PATH		:= src/main/engine
 
 include $(CLEAR_VARS)
 
-LIBRARY_NAME = HelloTriangle
+LIBRARY_NAME = RenderingText
 
 LOCAL_MODULE    := $(LIBRARY_NAME)
 
@@ -14,7 +14,7 @@ LOCAL_SRC_FILES := $(ENGINE_PATH)/esprogram.cpp \
 				   $(ENGINE_PATH)/esutil.cpp \
 				   $(ENGINE_PATH)/esfile.cpp \
 				   $(ENGINE_PATH)/android/esutil_android.cpp \
-				   HelloTriangle.cpp
+				   RenderingText.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(ENGINE_INC_PATH) \
@@ -26,6 +26,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
 
 LOCAL_STATIC_LIBRARIES := android_native_app_glue
+LOCAL_STATIC_LIBRARIES += freetype
 
 #The NDK toolchain supports C++ exceptions, since NDK r5, 
 #however all C++ sources are compiled with -fno-exceptions support by default, 
@@ -35,5 +36,6 @@ LOCAL_CPP_FEATURES += exceptions
 
 include $(BUILD_SHARED_LIBRARY)
 
+$(call import-module,freetype)
 $(call import-module,android/native_app_glue)
 
