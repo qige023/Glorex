@@ -115,3 +115,20 @@ int ESFileWrapper::esFileRead(esFile *pFile, int bytesToRead, void *buffer) {
 
     return bytesRead;
 }
+
+///
+// esFileRead()
+//
+//    Wrapper for platform specific File Get Length
+//
+long ESFileWrapper::esFileGetLength(esFile *pFile) {
+    long length;
+#ifdef ANDROID
+    length = AAsset_getLength(pFile);
+#else
+    fseek(pFile, 0, SEEK_END);
+    length = ftell(pFile);
+    fseek(pFile, 0, SEEK_SET);
+#endif
+    return length;
+}

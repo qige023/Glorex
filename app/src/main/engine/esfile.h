@@ -38,6 +38,7 @@ public:
     static esFile *esFileOpen(const char *fileName);
     static void esFileClose(esFile *pFile);
     static int esFileRead(esFile *pFile, int bytesToRead, void *buffer);
+    static long esFileGetLength(esFile *pFile);
 };
 
 #endif
