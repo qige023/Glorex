@@ -15,7 +15,6 @@ LOCAL_SRC_FILES := $(ENGINE_PATH)/esprogram.cpp \
 				   $(ENGINE_PATH)/esfile.cpp \
 				   $(ENGINE_PATH)/android/esutil_android.cpp \
 				   $(ENGINE_PATH)/loader/stbloader.cpp \
-				   $(ENGINE_PATH)/vbos/drawable.cpp \
 				   $(ENGINE_PATH)/vbos/vbocube.cpp \
 				   $(LIBRARY_NAME).cpp
 

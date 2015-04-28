@@ -10,7 +10,7 @@ using std::endl;
 #include "stb_image.h"
 
 GLubyte* STBLoader::load(const char *filename, GLint &width,
-        GLint &height, GLint &channels, GLint req_comp) {
+        GLint &height, GLint &channels, GLint req_comp, GLboolean needFlip) {
 
     FILE *pFile = NULL;
 
@@ -18,14 +18,16 @@ GLubyte* STBLoader::load(const char *filename, GLint &width,
     pFile = ESFileWrapper::esFopen(filename, "r");
 
     GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, req_comp);
-
-    //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
-    GLubyte *nBuffer = flipImage(buffer, width, height, channels);
-
     fclose(pFile);
-    delete[] buffer;
 
-    return nBuffer;
+    if (needFlip) {
+        //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
+        GLubyte *nBuffer = flipImage(buffer, width, height, channels);
+        delete[] buffer;
+        return nBuffer;
+    } else {
+        return buffer;
+    }
 }
 
 GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels, GLboolean alpha) {
@@ -62,6 +64,30 @@ GLuint STBLoader::loadTex(const char* fName, GLboolean alpha) {
     GLint w, h, c;
     return STBLoader::loadTex(fName, w, h, c, alpha);
 }
+
+GLuint STBLoader::loadCubemap(vector<const GLchar*> faces) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+
+    GLint width, height, chennels;
+    GLubyte* image;
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    for(GLuint i = 0; i < faces.size(); i++) {
+        image = STBLoader::load(faces[i], width, height, chennels, 3, false);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        delete[] image;
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+    return textureID;
+}
+
 
 GLubyte *STBLoader::flipImage(GLubyte *data, GLint width, GLint height, GLint channels) {
     /*  create a copy the image data    */

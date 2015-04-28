@@ -2,6 +2,9 @@
 #define BMPREADER_H_
 
 #include "esutil.h"
+#include <vector>
+using std::vector;
+
 /**
  * A Simple Wrapper for lib stb_image
  */
@@ -19,7 +22,7 @@ public:
 	 * @param height the height in pixels of the image is stored here.
 	 * @return a pointer to the image data
 	 */
-	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ , GLint req_comp);
+	static GLubyte * load( const char * fileName, GLint &width /*out*/, GLint &height /*out*/ , GLint &channels /*out*/ , GLint req_comp, GLboolean needFlip = true);
 
 	/**
 	 * Loads a image into an OpenGL texture.  This method only supports
@@ -31,6 +34,15 @@ public:
 	 */
 	static GLuint loadTex( const char * fileName, GLint &width /*out*/, GLint &height /*out*/, GLint &channels /*out*/ , GLboolean alpha);
 	static GLuint loadTex( const char * fileName, GLboolean alpha = false );
+	// Loads a cubemap texture from 6 individual texture faces
+	// Order should be:
+	// +X (right)
+	// -X (left)
+	// +Y (top)
+	// -Y (bottom)
+	// +Z (front)
+	// -Z (back)
+	static GLuint loadCubemap(vector<const GLchar*> faces);
 
 private:
 

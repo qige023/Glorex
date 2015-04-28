@@ -4,7 +4,7 @@ ENGINE_INC_PATH		:= src/main/engine
 
 include $(CLEAR_VARS)
 
-LIBRARY_NAME = Instancing
+LIBRARY_NAME = Cubemap
 
 LOCAL_MODULE    := $(LIBRARY_NAME)
 
@@ -15,7 +15,9 @@ LOCAL_SRC_FILES := $(ENGINE_PATH)/esprogram.cpp \
 				   $(ENGINE_PATH)/esfile.cpp \
 				   $(ENGINE_PATH)/android/esutil_android.cpp \
 				   $(ENGINE_PATH)/loader/stbloader.cpp \
+				   $(ENGINE_PATH)/vbos/vboshape.cpp \
 				   $(ENGINE_PATH)/vbos/vbocube.cpp \
+				   $(ENGINE_PATH)/vbos/vboskybox.cpp \
 				   $(LIBRARY_NAME).cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \

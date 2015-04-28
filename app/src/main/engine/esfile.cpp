@@ -4,7 +4,7 @@
     AAssetManager *ESFileWrapper::androidAssetManager = NULL;
 
     void ESFileWrapper::setAssetmanager(AAssetManager* manager) {
-        ESFileWrapper::androidAssetManager = manager;
+        androidAssetManager = manager;
     }
 
     int ESFileWrapper::android_read(void* cookie, char* buf, int size) {
@@ -44,7 +44,7 @@ FILE *ESFileWrapper::esFopen(const char *fileName, const char* mode) {
     FILE *file;
 #ifdef ANDROID
     if ( androidAssetManager != NULL ) {
-        file = ESFileWrapper::android_fopen(fileName, mode);
+        file = android_fopen(fileName, mode);
     }
 #else
 #ifdef __APPLE__

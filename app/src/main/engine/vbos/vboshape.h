@@ -6,7 +6,7 @@
 
 class VBOShape : public Drawable {
 
-private:
+protected:
     GLuint vaoHandle;
     GLuint vboHandle;
     GLuint vboElementHandle;
