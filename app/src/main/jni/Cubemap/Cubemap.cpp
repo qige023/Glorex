@@ -44,12 +44,12 @@ void Cubemap::initScene(ESContext *esContext) {
    skybox = new VBOSkybox();
 
    // Cubemap (Skybox)
-   skyboxFaces.push_back("media/skybox/valley/right.jpg");
-   skyboxFaces.push_back("media/skybox/valley/left.jpg");
-   skyboxFaces.push_back("media/skybox/valley/top.jpg");
-   skyboxFaces.push_back("media/skybox/valley/bottom.jpg");
-   skyboxFaces.push_back("media/skybox/valley/back.jpg");
-   skyboxFaces.push_back("media/skybox/valley/front.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/right.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/left.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/top.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/bottom.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/back.jpg");
+   skyboxFaces.push_back("media/skybox/greenroad/front.jpg");
 
    skyboxTexture = STBLoader::loadCubemap(skyboxFaces);
 
@@ -57,7 +57,7 @@ void Cubemap::initScene(ESContext *esContext) {
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
     view = mat4(1.0f);
-    view *= glm::lookAt(vec3(0.0f,0.0f,0.0f), vec3(1.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
+    view *= glm::lookAt(vec3(0.0f,0.0f,0.0f), vec3(0.0f,0.0f,-1.0f), vec3(0.0f,1.0f,0.0f));
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
