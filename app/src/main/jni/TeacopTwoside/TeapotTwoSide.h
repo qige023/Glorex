@@ -1,7 +1,7 @@
-#ifndef TORUSDIFFUSE_H
-#define TORUSDIFFUSE_H
+#ifndef TeapotTwoSide_H
+#define TeapotTwoSide_H
 
-#include "vbotorus.h"
+#include "vboteapot.h"
 
 #include "esscene.h"
 #include "esprogram.h"
@@ -9,13 +9,11 @@
 #include <glm/glm.hpp>
 using glm::mat4;
 
-class TorusDiffuse : public ESScene
-{
+class TeapotTwoSide: public ESScene {
 private:
     ESProgram prog;
 
-    VBOTorus *torus;
-
+    VBOTeapot *teapot;
     float angle;
 
     mat4 model;
@@ -26,8 +24,7 @@ private:
     void compileAndLinkShader();
 
 public:
-    TorusDiffuse();
-    ~TorusDiffuse();
+    TeapotTwoSide();
 
     void initScene(ESContext *esContext);
     void update(ESContext *esContext, float t );
@@ -35,4 +32,4 @@ public:
     void resize(ESContext *esContext);
 };
 
-#endif // TORUSDIFFUSE_H
+#endif // TeapotTwoSide_H

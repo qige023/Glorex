@@ -420,26 +420,3 @@ int ESProgram::getUniformLocation(const char * name) {
 
     return uniformLocations[name];
 }
-
-void ESProgram::getAndPrintGlError() {
-    while(TRUE) {
-        GLenum errorNum = glGetError();
-        switch(errorNum) {
-        case GL_NO_ERROR:
-            return;
-        case GL_INVALID_ENUM:
-            cout << "GL error found: GL_INVALID_ENUM" << endl;
-            break;
-        case GL_INVALID_VALUE:
-            cout << "GL error found: GL_INVALID_VALUE" << endl;
-            break;
-        case GL_INVALID_OPERATION:
-            cout << "GL error found: GL_INVALID_OPERATION" << endl;
-            break;
-        case GL_OUT_OF_MEMORY:
-            cout << "GL error found: GL_OUT_OF_MEMORY" << endl;
-            break;
-        }
-    }
-}
-

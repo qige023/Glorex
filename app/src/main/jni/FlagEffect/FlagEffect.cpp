@@ -54,16 +54,16 @@ void FlagEffect::initScene(ESContext *esContext) {
 
     GLfloat *flagVertexs = generateFlagVertexs();
     flag = new VBOShape(flagVertexs, 44 * 44 * 6, false, true, false, GL_DYNAMIC_DRAW);
+    delete[] flagVertexs;
 
     // Load texture file
     flagTexture = STBLoader::loadTex("media/texture/thumb_mount.bmp");
 
     model = mat4(1.0f);
-//    model *= glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,1.0f));
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
     view = mat4(1.0f);
-    view *= glm::lookAt(vec3(0.0f,0.0f,15.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
+    view *= glm::lookAt(vec3(0.0f,0.0f,20.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(45.0f),
@@ -78,6 +78,7 @@ void FlagEffect::update(ESContext *esContext, float deltaTime) {
 
     GLfloat *flagVertexs = generateFlagVertexs();
     flag->setBufferSubData(GL_ARRAY_BUFFER, 0, 44 * 44 * 6 * 5 * sizeof(GLfloat), flagVertexs);
+    delete[] flagVertexs;
 
     GLfloat temp;
     if (wiggle_count == 2) {

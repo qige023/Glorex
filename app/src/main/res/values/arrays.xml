@@ -9,7 +9,8 @@
         <item>Cubemap</item>
         <item>Rendering Text</item>
         <item>Blending Window</item>
-        <item>Torus Diffuse(spot light)</item>
+        <item>Diffuse Torus</item>
+        <item>Phong TwoSide Teapot</item>
     </string-array>
     <string-array name="library_names">
         <item>HelloTriangle</item>
@@ -21,5 +22,6 @@
         <item>RenderingText</item>
         <item>BlendingWindow</item>
         <item>TorusDiffuse</item>
+        <item>TeapotTwoSide</item>
     </string-array>
 </resources>

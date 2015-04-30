@@ -79,7 +79,7 @@ class ESProgram
 //    void   printActiveAttribs();
 
     const char * getTypeString( GLenum type );
-    void   getAndPrintGlError();
+
 };
 
 #endif // ESPROGRAM_H
