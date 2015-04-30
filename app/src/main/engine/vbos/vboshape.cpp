@@ -1,13 +1,13 @@
 #include "vboshape.h"
 
 VBOShape::VBOShape(GLfloat *vertexArray, GLsizei vertexLength,
-        bool enableNormal, bool enableTexcoord, bool enableTexcolor){
+        bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLenum nusage):usage(nusage){
     init(vertexArray, vertexLength, NULL, 0, enableNormal, enableTexcoord, enableTexcolor);
 
 }
 
 VBOShape::VBOShape(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIndex, GLsizei vertexIndexLength,
-        bool enableNormal, bool enableTexcoord, bool enableTexcolor) {
+        bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLenum nusage):usage(nusage) {
     init(vertexArray, vertexLength, vertexIndex, vertexIndexLength, enableNormal, enableTexcoord, enableTexcolor);
 }
 
@@ -27,7 +27,7 @@ void VBOShape::init(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIn
     glGenBuffers(1, &vboHandle);
     glBindVertexArray(vaoHandle);
     glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
-    glBufferData(GL_ARRAY_BUFFER, vertexLength * stride * sizeof(GLfloat), vertexArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexLength * stride * sizeof(GLfloat), vertexArray, usage);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(GLfloat), (GLvoid*)currentStride);
@@ -58,6 +58,14 @@ void VBOShape::init(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIn
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexIndexLength * sizeof(GLuint), vertexIndex, GL_STATIC_DRAW);
     }
 
+    glBindVertexArray(0);
+}
+
+void VBOShape::setBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data){
+    glBindVertexArray(vaoHandle);
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+    glBufferSubData(target, offset, size, data);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 

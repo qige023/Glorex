@@ -5,6 +5,7 @@
         <item>Simple VertexShader</item>
         <item>Simple Texture</item>
         <item>Instancing</item>
+        <item>Flag Floating Effect</item>
         <item>Cubemap</item>
         <item>Rendering Text</item>
         <item>Blending Window</item>
@@ -15,6 +16,7 @@
         <item>SimpleVertexShader</item>
         <item>SimpleTexture</item>
         <item>Instancing</item>
+        <item>FlagEffect</item>
         <item>Cubemap</item>
         <item>RenderingText</item>
         <item>BlendingWindow</item>

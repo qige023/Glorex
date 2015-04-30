@@ -10,6 +10,7 @@ protected:
     GLuint vaoHandle;
     GLuint vboHandle;
     GLuint vboElementHandle;
+    GLenum usage;
     GLsizei vertexLength;
     GLsizei vertexIndexLength;
 
@@ -19,12 +20,14 @@ protected:
 public:
 
     VBOShape(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIndex, GLsizei vertexIndexLength,
-            bool enableNormal, bool enableTexcoord, bool enableTexcolor);
+            bool enableNormal, bool enableTexcoord, bool enableTexcolorr, GLenum nusage = GL_STATIC_DRAW);
 
     VBOShape(GLfloat *vertexArray, GLsizei vertexLength,
-                bool enableNormal, bool enableTexcoord, bool enableTexcolor);
+                bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLenum nusage = GL_STATIC_DRAW);
 
     ~VBOShape();
+
+    void setBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data);
 
     void render() const;
 };
