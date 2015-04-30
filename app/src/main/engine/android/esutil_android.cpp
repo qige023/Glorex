@@ -120,6 +120,7 @@ static void HandleCommand(struct android_app *pApp, int32_t cmd) {
 //
 static int32_t HandleInput(struct android_app* app, AInputEvent* event) {
     int32_t lEventType = AInputEvent_getType(event);
+    float downX, downY;
 
     switch (lEventType) {
     case AINPUT_EVENT_TYPE_MOTION:
@@ -131,6 +132,9 @@ static int32_t HandleInput(struct android_app* app, AInputEvent* event) {
                 break;
             case AMOTION_EVENT_ACTION_DOWN:
                 cout << "HandleInput AMOTION_EVENT_ACTION_DOWN" << endl;
+                downX = AMotionEvent_getX(event, 0);
+                downY = AMotionEvent_getY(event, 0);
+                cout << "X: " << downX << "  Y: " << downY << endl;
                 break;
             case AMOTION_EVENT_ACTION_UP:
                 cout << "HandleInput AMOTION_EVENT_ACTION_UP" << endl;

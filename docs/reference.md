@@ -35,6 +35,10 @@ cd path-to-freetype
 make install DESTDIR=your-path-to-build-freetype
 ```
 
+## C++ ##
+[C++ callback for non-static function between different classes](http://stackoverflow.com/questions/11522422/c-callback-for-non-static-function-between-different-classes?rq=1)
+[Callback functions in c++](http://stackoverflow.com/questions/2298242/callback-functions-in-c)
+
 ## Others ##
 [stb_truetype解析ttf字体获取顶点信息](http://blog.csdn.net/wind_hzx/article/details/11830645)
 
