@@ -76,12 +76,15 @@ VBOShape::~VBOShape() {
 }
 
 void VBOShape::render() const {
+    render(GL_TRIANGLES);
+}
+
+void VBOShape::render(GLenum mode) const {
     glBindVertexArray(vaoHandle);
 
     if (vboElementHandle != 0) {
-        glDrawElements(GL_TRIANGLES, vertexIndexLength, GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
+        glDrawElements(mode, vertexIndexLength, GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
     } else {
-        glDrawArrays(GL_TRIANGLES, 0, vertexLength);
+        glDrawArrays(mode, 0, vertexLength);
     }
-
 }

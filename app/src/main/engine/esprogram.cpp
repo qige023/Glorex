@@ -1,7 +1,5 @@
 #include "esprogram.h"
 
-#include <fstream>
-
 #include "esutil.h"
 #include "esfile.h"
 #include <iostream>
@@ -148,7 +146,7 @@ void ESProgram::compileShader(const char * source,
             logString = c_log;
             delete[] c_log;
         }
-        string msg = string(fileName) + ": shader compliation failed\n";
+        string msg = string(fileName) + ": shader compilation failed\n";
         msg += logString;
 
         throw ESProgramException(msg);

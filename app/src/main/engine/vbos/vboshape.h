@@ -30,6 +30,8 @@ public:
     void setBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data);
 
     void render() const;
+
+    void render(GLenum mode) const;
 };
 
 #endif // VBOSHAPE_H
