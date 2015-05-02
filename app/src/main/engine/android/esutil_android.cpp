@@ -118,26 +118,56 @@ static void HandleCommand(struct android_app *pApp, int32_t cmd) {
 ///
 //    Android callback for onAppInput
 //
-static int32_t HandleInput(struct android_app* app, AInputEvent* event) {
-    int32_t lEventType = AInputEvent_getType(event);
-    float downX, downY;
+static int32_t HandleInput(struct android_app* pApp, AInputEvent* event) {
+    ESContext *esContext = (ESContext *) pApp->userData;
 
-    switch (lEventType) {
+    int32_t eventType = AInputEvent_getType(event);
+    int32_t eventSource = AInputEvent_getSource(event);
+    int32_t eventAction;
+
+    float motionX, motionY;
+    size_t pointerIndex;
+    int32_t pointerId ,pointerCount;
+
+    switch (eventType) {
     case AINPUT_EVENT_TYPE_MOTION:
-        switch (AInputEvent_getSource(event)) {
+        switch (eventSource) {
         case AINPUT_SOURCE_TOUCHSCREEN:
-            switch (AMotionEvent_getAction(event)) {
+            eventAction = AMotionEvent_getAction(event) & AMOTION_EVENT_ACTION_MASK;
+            pointerIndex = (eventAction & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+            pointerId = AMotionEvent_getPointerId(event, pointerIndex);
+            motionX  = AMotionEvent_getX(event, pointerId);
+            motionY  = AMotionEvent_getY(event, pointerId);
+
+            switch (eventAction) {
             case AMOTION_EVENT_ACTION_MOVE:
+                //http://stackoverflow.com/questions/9028357/android-multitouch-second-finger-action-move-ignored
                 cout << "HandleInput AMOTION_EVENT_ACTION_MOVE" << endl;
+                pointerCount = AMotionEvent_getPointerCount(event);
+                for(int i = 0; i < pointerCount; ++i) {
+                    pointerIndex = i;
+                    pointerId = AMotionEvent_getPointerId(event, pointerIndex);
+                    motionX  = AMotionEvent_getX(event, pointerId);
+                    motionY  = AMotionEvent_getY(event, pointerId);
+                    if(esContext->onMotionListener != NULL) {
+                        esContext->onMotionListener->onMotionMove(pointerId, motionX, motionY);
+                        cout <<"pointerId: "<< pointerId << "  X: " << motionX << "  Y: " << motionY << endl;
+                    }
+                }
                 break;
             case AMOTION_EVENT_ACTION_DOWN:
                 cout << "HandleInput AMOTION_EVENT_ACTION_DOWN" << endl;
-                downX = AMotionEvent_getX(event, 0);
-                downY = AMotionEvent_getY(event, 0);
-                cout << "X: " << downX << "  Y: " << downY << endl;
+                if(esContext->onMotionListener != NULL) {
+                    esContext->onMotionListener->onMotionDown(pointerId, motionX, motionY);
+                    cout <<"pointerId: "<< pointerId << "  X: " << motionX << "  Y: " << motionY << endl;
+                }
                 break;
             case AMOTION_EVENT_ACTION_UP:
                 cout << "HandleInput AMOTION_EVENT_ACTION_UP" << endl;
+                if(esContext->onMotionListener != NULL) {
+                    esContext->onMotionListener->onMotionUp(pointerId, motionX, motionY);
+                    cout <<"pointerId: "<< pointerId << "  X: " << motionX << "  Y: " << motionY << endl;
+                }
                 break;
             }
             break;
@@ -199,7 +229,6 @@ void android_main(struct android_app *pApp) {
             if (pApp->destroyRequested != 0) {
                 return;
             }
-
         }
 
         if (esContext->eglNativeWindow == NULL) {

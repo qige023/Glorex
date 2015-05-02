@@ -2,16 +2,29 @@
 #define CONTROLLAYER_H
 
 #include "escontext.h"
+#include "esprogram.h"
 #include "vboshape.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
 
-class ControlLayer {
-private:
+class OnMotionControlLayerListener : public IOnMotionListener {
+public:
+    void onMotionDown(int32_t pointerId, float downX, float downY);
+    void onMotionMove(int32_t pointerId, float downX, float downY);
+    void onMotionUp(int32_t pointerId, float downX, float downY);
+};
 
-    VBOShape leftPanel;
-    VBOShape rightPanel;
+class ControlLayer {
+    friend class OnMotionControlLayerListener;
+
+private:
+    // Circle area where can be hit
+    VBOShape *leftPanel;
+    VBOShape *rightPanel;
+    // Hit point position
+    VBOShape *leftHitPoint;
+    VBOShape *rightHitPoint;
     ESProgram prog;
 
     mat4 projection;
@@ -23,34 +36,35 @@ private:
     void storePreProgram();
     void recoverPreProgram();
     void compileAndLinkShader();
+    GLfloat *generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider);
+
+    friend class Rectangle;
 public:
 
-    ControlLayer() {
-    }
+    ControlLayer();
 
-    ~ControlLayer() {
-    }
+    ~ControlLayer();
 
     /**
      Load textures, initialize shaders, etc.
      */
-    void initLayer(ESContext *esContext) = 0;
+    void initLayer(ESContext *esContext);
 
     /**
      This is called prior to every frame.  Use this
      to update your animation.
      */
-    void update(ESContext *esContext, float t) = 0;
+    void update(ESContext *esContext, float t);
 
     /**
      Draw your layer.
      */
-    void render(ESContext *esContext) = 0;
+    void render(ESContext *esContext);
 
     /**
      Called when layer is resized
      */
-    void resize(ESContext *esContext) = 0;
+    void resize(ESContext *esContext);
 
 };
 

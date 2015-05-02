@@ -12,12 +12,19 @@
 #include <EGL/eglext.h>
 #endif
 
-typedef struct ESContext ESContext;
-
 //Forward Declartion
 class ESScene;
 
-struct ESContext {
+// Touch Event Interface
+class IOnMotionListener {
+public:
+  virtual void onMotionDown(int32_t pointerId, float downX, float downY) = 0;
+  virtual void onMotionMove(int32_t pointerId, float downX, float downY) = 0;
+  virtual void onMotionUp(int32_t pointerId, float downX, float downY) = 0;
+};
+
+class ESContext {
+public:
     /// Put platform specific data here
     void *platformData;
 
@@ -46,6 +53,8 @@ struct ESContext {
 
     /// ESScene scene
     ESScene *scene;
+
+    IOnMotionListener *onMotionListener;
 };
 
 #endif //ESCONTEXT_H

@@ -17,7 +17,7 @@ using glm::vec4;
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-HelloTriangle::HelloTriangle() { }
+HelloTriangle::HelloTriangle():controlLayer(NULL) { }
 
 HelloTriangle::~HelloTriangle() { }
 
@@ -36,6 +36,9 @@ void HelloTriangle::compileAndLinkShader() {
 }
 
 void HelloTriangle::initScene(ESContext *esContext) {
+
+    controlLayer = new ControlLayer();
+    controlLayer->initLayer(esContext);
 
     compileAndLinkShader();
     /////////////////// Create the VBO ////////////////////
@@ -76,6 +79,12 @@ void HelloTriangle::initScene(ESContext *esContext) {
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL );
 
+//    glEnable(GL_DEPTH_TEST);
+//    glDepthFunc(GL_LEQUAL);
+
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
 }
 
@@ -87,6 +96,7 @@ void HelloTriangle::update(ESContext *esContext, float t )
 void HelloTriangle::render(ESContext *esContext)
 {
     glClear(GL_COLOR_BUFFER_BIT);
+    prog.use();
 
     float aspect = (float) esContext->width / esContext->height;
 
@@ -107,6 +117,8 @@ void HelloTriangle::render(ESContext *esContext)
     glBindVertexArray(vaoHandle);
 
     glDrawArrays(GL_TRIANGLES, 0, 3 );
+
+    controlLayer->render(esContext);
 }
 
 void HelloTriangle::resize(ESContext *esContext)
