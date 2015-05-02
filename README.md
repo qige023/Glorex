@@ -1,5 +1,7 @@
-GLOREX - LIGHT WEIGHT 3D Framework on OpenGL ES 3.0 
-===============================
+GLOREX
+===================================================
+
+light weight cross platform 3D framework on OpenGL ES 3.0
 
 This repository contains GLOREX engine source and the sample code for about 10+ 3D demo using GLOREX native c/c++.
 
@@ -62,7 +64,7 @@ to be add..
 * [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
 * [Learn Opengl](http://www.learnopengl.com/)
 
-*Please contact me know if some demo assets need more license granted or has free use limitation*
+*Please contact me if some demo assets need more license granted or has free use limitation*
 
 ## License ##
 The MIT License
