@@ -29,10 +29,13 @@ Cubemap::~Cubemap() {
 void Cubemap::initScene(ESContext *esContext) {
     cout << "exec Cubemap::initScene" << endl;
 
-    // Define the viewport dimensions
-    glViewport(0, 0, esContext->width, esContext->height);
+    controlLayer = new ControlLayer();
+    controlLayer->initLayer(esContext);
 
     compileAndLinkShader();
+
+    // Define the viewport dimensions
+    glViewport(0, 0, esContext->width, esContext->height);
 
     // Enables depth-buffer for hidden surface removal
     glEnable(GL_DEPTH_TEST);
@@ -84,6 +87,8 @@ void Cubemap::render(ESContext *esContext) {
     setMatrices();
     skybox->render();
     glDepthMask(GL_TRUE);
+
+    controlLayer->render(esContext);
 }
 
 void Cubemap::setMatrices() {

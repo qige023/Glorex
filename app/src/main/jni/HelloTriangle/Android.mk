@@ -15,15 +15,13 @@ LOCAL_SRC_FILES := $(ENGINE_PATH)/esprogram.cpp \
 				   $(ENGINE_PATH)/esfile.cpp \
 				   $(ENGINE_PATH)/android/esutil_android.cpp \
 				   $(ENGINE_PATH)/vbos/vboshape.cpp \
-				   $(ENGINE_PATH)/layer/controllayer.cpp \
 				   HelloTriangle.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(ENGINE_INC_PATH) \
                     $(ENGINE_INC_PATH)/android \
                     $(ENGINE_INC_PATH)/vbos \
-                    $(ENGINE_INC_PATH)/loader \
-                    $(ENGINE_INC_PATH)/layer
+                    $(ENGINE_INC_PATH)/loader
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
 

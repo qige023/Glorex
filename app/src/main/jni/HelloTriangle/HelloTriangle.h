@@ -4,7 +4,6 @@
 #include "esutil.h"
 #include "esscene.h"
 #include "esprogram.h"
-#include "controllayer.h"
 
 #include <glm/glm.hpp>
 using glm::mat4;
@@ -12,7 +11,6 @@ using glm::mat4;
 class HelloTriangle: public ESScene {
 private:
 
-    ControlLayer *controlLayer;
     GLuint vboHandles[2];
     GLuint vaoHandle;
     ESProgram prog;

@@ -5,40 +5,79 @@
 #include "esprogram.h"
 #include "vboshape.h"
 
+#include <string>
+using std::string;
+#include <map>
+using std::map;
+
 #include <glm/glm.hpp>
 using glm::mat4;
 
+class ControlLayer;
+
 class OnMotionControlLayerListener : public IOnMotionListener {
+    ControlLayer *controlLayer;
 public:
+    OnMotionControlLayerListener(ControlLayer *controlLayer);
     void onMotionDown(int32_t pointerId, float downX, float downY);
     void onMotionMove(int32_t pointerId, float downX, float downY);
     void onMotionUp(int32_t pointerId, float downX, float downY);
+};
+
+class MotionArea {
+    static GLint Circle_Precition;
+public:
+    MotionArea(GLfloat posx, GLfloat posy, GLfloat radius);
+    // motion area for detect
+    VBOShape *panel;
+    GLfloat posx, posy, radius;
+    // hitPoint area for showing where current user touching
+    VBOShape *hitPoint;
+    GLfloat posx1, posy1, radius1;
+
+    // mark is user hitting in the motion area
+    ESboolean isActive;
+    // pointerId from multi-touch
+    int32_t pointerId;
+
+    void render();
+    ESboolean checkPoint(GLfloat rx, GLfloat ry);
+    void addHitPoint(GLfloat rx, GLfloat ry);
+    void updateHitPoint(GLfloat rx, GLfloat ry);
+    void removeHitPoint();
+    GLfloat *generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider);
 };
 
 class ControlLayer {
     friend class OnMotionControlLayerListener;
 
 private:
+    vec4 motionArearColor;
+    vec4 hitPointColor;
+
     // Circle area where can be hit
-    VBOShape *leftPanel;
-    VBOShape *rightPanel;
-    // Hit point position
-    VBOShape *leftHitPoint;
-    VBOShape *rightHitPoint;
+    MotionArea *leftPanel;
+    MotionArea *rightPanel;
+
+    // layer basic info
+    float width, height;
+    ESboolean verticalMode;
+
     ESProgram prog;
 
     mat4 projection;
 
-    // save last program handle, we will store it and recover it
+    //save and restore GL state
+    map<GLenum, GLboolean> glEnables;
+    map<string, GLint> glFuncAttrs;
+
+    // we will store current opengl state and recover it
     // on each call of public function
-    GLint lastProgHandle;
+    void storeState();
+    void recoverState();
 
-    void storePreProgram();
-    void recoverPreProgram();
     void compileAndLinkShader();
-    GLfloat *generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider);
 
-    friend class Rectangle;
 public:
 
     ControlLayer();
@@ -65,7 +104,6 @@ public:
      Called when layer is resized
      */
     void resize(ESContext *esContext);
-
 };
 
 #endif // CONTROLLAYER_H

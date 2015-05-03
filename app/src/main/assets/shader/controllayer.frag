@@ -2,9 +2,10 @@
 
 precision mediump float;
 
+uniform vec4 CircleColor;
 out vec4 color;
 
 void main()
 {
-    color = vec4(0.0f, 0.0f, 0.0f, 0.20f);
+    color = CircleColor;
 }  

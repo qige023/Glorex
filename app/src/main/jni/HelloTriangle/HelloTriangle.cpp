@@ -17,7 +17,7 @@ using glm::vec4;
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-HelloTriangle::HelloTriangle():controlLayer(NULL) { }
+HelloTriangle::HelloTriangle() { }
 
 HelloTriangle::~HelloTriangle() { }
 
@@ -36,9 +36,6 @@ void HelloTriangle::compileAndLinkShader() {
 }
 
 void HelloTriangle::initScene(ESContext *esContext) {
-
-    controlLayer = new ControlLayer();
-    controlLayer->initLayer(esContext);
 
     compileAndLinkShader();
     /////////////////// Create the VBO ////////////////////
@@ -117,8 +114,6 @@ void HelloTriangle::render(ESContext *esContext)
     glBindVertexArray(vaoHandle);
 
     glDrawArrays(GL_TRIANGLES, 0, 3 );
-
-    controlLayer->render(esContext);
 }
 
 void HelloTriangle::resize(ESContext *esContext)

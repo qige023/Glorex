@@ -134,7 +134,7 @@ static int32_t HandleInput(struct android_app* pApp, AInputEvent* event) {
         switch (eventSource) {
         case AINPUT_SOURCE_TOUCHSCREEN:
             eventAction = AMotionEvent_getAction(event) & AMOTION_EVENT_ACTION_MASK;
-            pointerIndex = (eventAction & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+            pointerIndex = (AMotionEvent_getAction(event) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
             pointerId = AMotionEvent_getPointerId(event, pointerIndex);
             motionX  = AMotionEvent_getX(event, pointerId);
             motionY  = AMotionEvent_getY(event, pointerId);
@@ -156,13 +156,15 @@ static int32_t HandleInput(struct android_app* pApp, AInputEvent* event) {
                 }
                 break;
             case AMOTION_EVENT_ACTION_DOWN:
-                cout << "HandleInput AMOTION_EVENT_ACTION_DOWN" << endl;
+            case AMOTION_EVENT_ACTION_POINTER_DOWN:
+                cout << "HandleInput AMOTION_EVENT_ACTION_POINTER_DOWN" << endl;
                 if(esContext->onMotionListener != NULL) {
                     esContext->onMotionListener->onMotionDown(pointerId, motionX, motionY);
                     cout <<"pointerId: "<< pointerId << "  X: " << motionX << "  Y: " << motionY << endl;
                 }
                 break;
             case AMOTION_EVENT_ACTION_UP:
+            case AMOTION_EVENT_ACTION_POINTER_UP:
                 cout << "HandleInput AMOTION_EVENT_ACTION_UP" << endl;
                 if(esContext->onMotionListener != NULL) {
                     esContext->onMotionListener->onMotionUp(pointerId, motionX, motionY);

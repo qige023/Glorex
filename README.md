@@ -1,7 +1,7 @@
 GLOREX
 ===================================================
 
-light weight cross platform 3D framework on OpenGL ES 3.0
+light-weight cross-platform 3D framework on OpenGL ES 3.0
 
 This repository contains GLOREX engine source and the sample code for about 10+ 3D demo using GLOREX native c/c++.
 

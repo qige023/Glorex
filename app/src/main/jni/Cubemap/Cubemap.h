@@ -6,6 +6,7 @@
 #include "esscene.h"
 #include "esprogram.h"
 #include "vbos/vboskybox.h"
+#include "layer/controllayer.h"
 
 #include <vector>
 using std::vector;
@@ -17,6 +18,7 @@ class Cubemap : public ESScene
 {
 private:
     ESProgram prog;
+    ControlLayer *controlLayer;
 
     VBOCube *cube;
     vector<const GLchar*> skyboxFaces;

@@ -20,16 +20,16 @@ ControlLayer::ControlLayer() {
 }
 
 ControlLayer::~ControlLayer() {
-    delete[] leftPanel;
+    delete leftPanel;
 }
 
 void ControlLayer::initLayer(ESContext *esContext) {
     cout << "exec ControlLayer::initLayer" << endl;
 
-    esContext->onMotionListener = new OnMotionControlLayerListener();
+    esContext->onMotionListener = new OnMotionControlLayerListener(this);
 
-    storePreProgram();
     compileAndLinkShader();
+    storeState();
 
     projection = mat4(1.0f);
     projection *= glm::ortho(0.0f, static_cast<GLfloat>(esContext->width), 0.0f,
@@ -39,6 +39,8 @@ void ControlLayer::initLayer(ESContext *esContext) {
     //Generate panel params based on scene width/height
     GLfloat panelMargin, panelPositionBase, panelRadius;
 
+    width = esContext->width;
+    height = esContext->height;
     if(esContext->width >  esContext->height) {
         panelPositionBase = std::min(esContext->width/3, esContext->height/2) / 2;
         panelMargin = esContext->height/15.0f;
@@ -50,16 +52,12 @@ void ControlLayer::initLayer(ESContext *esContext) {
 
     GLint circlePrecition = 50;
     //draw first Circle
-    GLfloat *leftCircleVertexs = generateCircleVertexs(panelRadius, panelPositionBase, panelPositionBase, circlePrecition);
-    leftPanel = new VBOShape(leftCircleVertexs, circlePrecition + 2, false, false, false);
-    delete[] leftCircleVertexs;
+    leftPanel = new MotionArea(panelRadius, panelPositionBase, panelPositionBase);
 
     //draw second Circle
-    GLfloat *rightCircleVertexs = generateCircleVertexs(panelRadius, esContext->width - panelPositionBase, panelPositionBase, circlePrecition);
-    rightPanel = new VBOShape(rightCircleVertexs, circlePrecition + 2, false, false, false);
-    delete[] rightCircleVertexs;
+    rightPanel = new MotionArea(panelRadius, esContext->width - panelPositionBase, panelPositionBase);
 
-    recoverPreProgram();
+    recoverState();
 }
 
 void ControlLayer::update(ESContext *esContext, float deltaTime ) {
@@ -67,24 +65,22 @@ void ControlLayer::update(ESContext *esContext, float deltaTime ) {
 }
 
 void ControlLayer::render(ESContext *esContext) {
-    storePreProgram();
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    if(glIsEnabled(GL_DEPTH_TEST)) {
-        glDepthFunc(GL_ALWAYS);
-    }
+    storeState();
 
     // do real render
-    leftPanel->render(GL_TRIANGLE_FAN);
-    rightPanel->render(GL_TRIANGLE_FAN);
+    prog.setUniform("CircleColor", vec4(0.0f, 0.0f, 0.0f, 0.2f));
+    leftPanel->panel->render(GL_TRIANGLE_FAN);
+    rightPanel->panel->render(GL_TRIANGLE_FAN);
 
-    // restore previous state of previous program
-    if(glIsEnabled(GL_DEPTH_TEST)) {
-        glDepthFunc(GL_LEQUAL);
+    prog.setUniform("CircleColor", vec4(0.0f, 0.0f, 1.0f, 0.8f));
+    if(leftPanel->isActive == TRUE) {
+        leftPanel->hitPoint->render(GL_TRIANGLE_FAN);
     }
-    recoverPreProgram();
+    if(rightPanel->isActive == TRUE) {
+        rightPanel->hitPoint->render(GL_TRIANGLE_FAN);
+    }
+
+    recoverState();
 }
 
 void ControlLayer::resize(ESContext *esContext) {
@@ -98,25 +94,108 @@ void ControlLayer::compileAndLinkShader() {
         prog.compileShader("shader/controllayer.frag");
         prog.link();
         prog.validate();
-        prog.use();
     } catch (ESProgramException & e) {
         cerr << e.what() << endl;
         exit( EXIT_FAILURE);
     }
 }
 
-void ControlLayer::storePreProgram() {
+void ControlLayer::storeState() {
+
+    glEnables[GL_BLEND] = glIsEnabled(GL_BLEND);
+    if(glEnables[GL_BLEND] == TRUE) {
+        // save off current state of src / dst blend functions
+        GLint blendSrc;
+        GLint blendDst;
+        glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrc);
+        glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDst);
+        glFuncAttrs["GL_BLEND_SRC"] = blendSrc;
+        glFuncAttrs["GL_BLEND_DST"] = blendDst;
+    } else {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    glEnables[GL_DEPTH_TEST] = glIsEnabled(GL_DEPTH_TEST);
+    if(glEnables[GL_DEPTH_TEST] == TRUE) {
+        GLint depthFunc;
+        glGetIntegerv(GL_DEPTH_FUNC, &depthFunc);
+        glFuncAttrs["GL_DEPTH_FUNC"] = depthFunc;
+    } else {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);
+    }
+
+    GLint lastProgHandle;
     glGetIntegerv(GL_CURRENT_PROGRAM, &lastProgHandle);
+    glFuncAttrs["GL_CURRENT_PROGRAM"] = lastProgHandle;
+
     if(prog.isLinked()) {
         prog.use();
     }
 }
 
-void ControlLayer::recoverPreProgram() {
-    glUseProgram(lastProgHandle);
+void ControlLayer::recoverState() {
+    if(glEnables[GL_BLEND] == TRUE) {
+        glBlendFunc(glFuncAttrs["GL_BLEND_SRC"] , glFuncAttrs["GL_BLEND_DST"]);
+    } else {
+        glDisable(GL_BLEND);
+    }
+    if(glEnables[GL_DEPTH_TEST] == TRUE) {
+        glDepthFunc(glFuncAttrs["GL_DEPTH_FUNC"]);
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
+    glUseProgram(glFuncAttrs["GL_CURRENT_PROGRAM"]);
 }
 
-GLfloat *ControlLayer::generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider) {
+//---------------------MotionArea---------------------------
+
+GLint MotionArea::Circle_Precition = 50;
+
+MotionArea::MotionArea(GLfloat nradius, GLfloat nposx, GLfloat nposy): radius(nradius),
+        posx(nposx), posy(nposy), isActive(FALSE), pointerId(-1){
+    GLfloat *circleVertexs = MotionArea::generateCircleVertexs(radius, posx, posy, Circle_Precition);
+    panel = new VBOShape(circleVertexs, Circle_Precition + 2, false, false, false);
+    delete[] circleVertexs;
+}
+
+ESboolean MotionArea::checkPoint(GLfloat rx, GLfloat ry) {
+    if(radius > sqrt(pow((rx - posx), 2.0f) + pow((ry - posy), 2.0f))){
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void MotionArea::addHitPoint(GLfloat rx, GLfloat ry) {
+    isActive = TRUE;
+    posx1 = rx;
+    posy1 = ry;
+    radius1 = 70.0f;
+    GLfloat *hitPointVertexs = MotionArea::generateCircleVertexs(radius1, posx1, posy1, Circle_Precition);
+    hitPoint = new VBOShape(hitPointVertexs, Circle_Precition + 2, false, false, false, GL_DYNAMIC_DRAW);
+    delete[] hitPointVertexs;
+}
+
+void MotionArea::removeHitPoint() {
+    isActive = FALSE;
+    pointerId = -1;
+    if(hitPoint != NULL) {
+        delete hitPoint;
+        hitPoint = NULL;
+    }
+}
+
+void MotionArea::updateHitPoint(GLfloat rx, GLfloat ry) {
+    posx1 = rx;
+    posy1 = ry;
+    radius1 = 70.0f;
+    GLfloat *hitPointVertexs = MotionArea::generateCircleVertexs(radius1, posx1, posy1, Circle_Precition);
+    hitPoint->setBufferSubData(GL_ARRAY_BUFFER, 0, (Circle_Precition + 2) * 3 * sizeof(GLfloat), hitPointVertexs);
+    delete[] hitPointVertexs;
+}
+
+GLfloat *MotionArea::generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider) {
     GLfloat *circleVertexs = new GLfloat[(divider + 2) * 3];
     circleVertexs[0] = rx;
     circleVertexs[1] = ry;
@@ -133,12 +212,55 @@ GLfloat *ControlLayer::generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat r
     return circleVertexs;
 }
 
+void MotionArea::render() {
+    panel->render(GL_TRIANGLE_FAN);
+    if(isActive) {
+        hitPoint->render(GL_TRIANGLE_FAN);
+    }
+}
+
+//---------------------OnMotionControlLayerListener---------------------------
+
+OnMotionControlLayerListener::OnMotionControlLayerListener(ControlLayer *nControlLayer):controlLayer(nControlLayer) {
+
+}
+
 void OnMotionControlLayerListener::onMotionDown(int32_t pointerId, float downX, float downY) {
+    downY = controlLayer->height - downY;
+    if(controlLayer->leftPanel->checkPoint(downX, downY) == TRUE) {
+        controlLayer->leftPanel->pointerId = pointerId;
+        controlLayer->leftPanel->addHitPoint(downX, downY);
+    }
+    if(controlLayer->rightPanel->checkPoint(downX, downY) == TRUE) {
+        controlLayer->rightPanel->pointerId = pointerId;
+        controlLayer->rightPanel->addHitPoint(downX, downY);
+    }
 }
 
 void OnMotionControlLayerListener::onMotionMove(int32_t pointerId, float downX, float downY) {
-
+    downY = controlLayer->height - downY;
+    if(controlLayer->leftPanel->isActive == TRUE && controlLayer->leftPanel->pointerId == pointerId){
+        if(controlLayer->leftPanel->checkPoint(downX, downY) == TRUE) {
+            controlLayer->leftPanel->updateHitPoint(downX, downY);
+        } else {
+            controlLayer->leftPanel->removeHitPoint();
+        }
+    }
+    if(controlLayer->rightPanel->isActive == TRUE && controlLayer->rightPanel->pointerId == pointerId){
+        if(controlLayer->rightPanel->checkPoint(downX, downY) == TRUE) {
+            controlLayer->rightPanel->updateHitPoint(downX, downY);
+        } else {
+            controlLayer->rightPanel->removeHitPoint();
+        }
+    }
 }
 
 void OnMotionControlLayerListener::onMotionUp(int32_t pointerId, float downX, float downY) {
+    downY = controlLayer->height - downY;
+    if(controlLayer->leftPanel->isActive == TRUE && controlLayer->leftPanel->pointerId == pointerId){
+        controlLayer->leftPanel->removeHitPoint();
+    }
+    if(controlLayer->rightPanel->isActive == TRUE && controlLayer->rightPanel->pointerId == pointerId){
+        controlLayer->rightPanel->removeHitPoint();
+    }
 }
