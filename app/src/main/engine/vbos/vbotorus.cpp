@@ -1,11 +1,8 @@
 #include "vbotorus.h"
-#include "defines.h"
-
 #include "esutil.h"
 
 #include <cstdio>
 #include <cmath>
-
 #include <iostream>
 
 using std::cout;
@@ -99,8 +96,8 @@ void VBOTorus::generateVerts(float * verts, float * norms, float * tex,
                              unsigned int * el,
                              float outerRadius, float innerRadius)
 {
-    float ringFactor  = (float)(TWOPI / rings);
-    float sideFactor = (float)(TWOPI / sides);
+    float ringFactor  = (float)(ES_TWOPI / rings);
+    float sideFactor = (float)(ES_TWOPI / sides);
     int idx = 0, tidx = 0;
     for( int ring = 0; ring <= rings; ring++ ) {
         float u = ring * ringFactor;
@@ -117,8 +114,8 @@ void VBOTorus::generateVerts(float * verts, float * norms, float * tex,
             norms[idx] = cv * cu * r;
             norms[idx + 1] = cv * su * r;
             norms[idx + 2] = sv * r;
-            tex[tidx] = (float)(u / TWOPI);
-            tex[tidx+1] = (float)(v / TWOPI);
+            tex[tidx] = (float)(u / ES_TWOPI);
+            tex[tidx+1] = (float)(v / ES_TWOPI);
             tidx += 2;
             // Normalize
             float len = sqrt( norms[idx] * norms[idx] +

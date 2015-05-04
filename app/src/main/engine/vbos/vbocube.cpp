@@ -1,9 +1,5 @@
 #include "vbocube.h"
-#include "defines.h"
-
 #include "esutil.h"
-
-#include <cstdio>
 
 VBOCube::VBOCube(float nsize) : size(nsize) {
     float size2 = size / 2.0f;

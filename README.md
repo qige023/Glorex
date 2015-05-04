@@ -1,24 +1,23 @@
-GLOREX
+Glorex
 ===================================================
 
-light-weight cross-platform 3D framework on OpenGL ES 3.0
+A light-weight cross-platform 3D framework and oriented tools collection for OpenGL ES 3.0 on mobile.
 
-This repository contains GLOREX engine source and the sample code for about 10+ 3D demo using GLOREX native c/c++.
+This repository contains Glorex source and the sample code for 10+ 3D demos using Glorex and native c/c++.
 
-*Currently this project's core C++ engine is under active development, not guarantee build successfully on 
-master. But you still can get a previously builded well app from [here](http://www.github.com)*
+*Currently this project's core code is under active development, not guarantee build successfully on master. But you still can get a previously builded well app from [here](http://www.github.com)*
 
 ## Features ##
-* Focus on mobile(Android/IOS) gles3.0+ only
-* Use native C/C++ and modern OpenGL ES3.0 API
-* Use recommended shaders for rendering, no more fixed pipeline on OpenGL ES1.0
-* Multi-touch Support
+* Focus on mobile(Android/IOS) OpenGL ES3.0+ only
+* Use native C/C++ and modern OpenGL ES3.0 API for cross-platform
+* Use recommended GLSL for rendering, no more fixed pipeline on OpenGL ES1.0
 * Use [GLM](http://glm.g-truc.net/0.9.6/index.html) for graphic math
 * Use [assimp](https://github.com/assimp/assimp) for asset import
 * Use [stb_image](https://github.com/nothings/stb) for image import
 * Use [freetype](http://www.freetype.org/) for TTF import
+* Multi-touch Support
 * Nice framework and examples based on a couple of projects (see below)
-* Build once, get all! Plenty examples just in a single demo app
+* Plenty demos (currently 10+ 3D demos) in a single demo app (see below)
 * Use Gradle for Building On Android, easy to build
 
 ## Content ##

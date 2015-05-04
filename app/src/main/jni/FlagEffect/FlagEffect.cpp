@@ -1,25 +1,25 @@
 #include "FlagEffect.h"
 
-#include "esutil.h"
-#include "defines.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <math.h>
-
-#include "vbos/vboshape.h"
-#include "loader/stbloader.h"
+#include <cmath>
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
-using glm::vec3;
-using glm::vec4;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+using glm::vec3;
+using glm::vec4;
+
+#include "esutil.h"
+#include "vbos/vboshape.h"
+#include "loader/stbloader.h"
+
 
 FlagEffect::FlagEffect() {
 }
@@ -45,7 +45,7 @@ void FlagEffect::initScene(ESContext *esContext) {
         for (int y = 0; y < 45; y++) {
             points[x][y][0] = float((x / 5.0f) - 4.5f);
             points[x][y][1] = float((y / 5.0f) - 4.5f);
-            points[x][y][2] = float(sin((((x / 5.0f) * 40.0f) / 360.0f) * TWOPI));
+            points[x][y][2] = float(sin((((x / 5.0f) * 40.0f) / 360.0f) * ES_TWOPI));
         }
     }
 

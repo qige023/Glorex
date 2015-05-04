@@ -1,6 +1,5 @@
 #include "controllayer.h"
 
-#include "defines.h"
 #include <iostream>
 #include <algorithm>
 
@@ -10,10 +9,14 @@ using std::endl;
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+using glm::vec2;
 using glm::vec3;
 using glm::vec4;
+
+#include "esutil.h"
 
 ControlLayer::ControlLayer() {
 
@@ -149,6 +152,26 @@ void ControlLayer::recoverState() {
     glUseProgram(glFuncAttrs["GL_CURRENT_PROGRAM"]);
 }
 
+ESboolean ControlLayer::getPanelState(int panelNum, float &angle, float &factor) {
+    if(panelNum == LEFT_PANEL) {
+        if (leftPanel->isActive) {
+            angle = leftPanel->angle;
+            factor = leftPanel->factor;
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    } else {
+        if (rightPanel->isActive) {
+            angle = rightPanel->angle;
+            factor = rightPanel->factor;
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+}
+
 //---------------------MotionArea---------------------------
 
 GLint MotionArea::Circle_Precition = 50;
@@ -175,6 +198,7 @@ void MotionArea::addHitPoint(GLfloat rx, GLfloat ry) {
     GLfloat *hitPointVertexs = MotionArea::generateCircleVertexs(radius1, posx1, posy1, Circle_Precition);
     hitPoint = new VBOShape(hitPointVertexs, Circle_Precition + 2, false, false, false, GL_DYNAMIC_DRAW);
     delete[] hitPointVertexs;
+    updateMotionResult();
 }
 
 void MotionArea::removeHitPoint() {
@@ -193,6 +217,7 @@ void MotionArea::updateHitPoint(GLfloat rx, GLfloat ry) {
     GLfloat *hitPointVertexs = MotionArea::generateCircleVertexs(radius1, posx1, posy1, Circle_Precition);
     hitPoint->setBufferSubData(GL_ARRAY_BUFFER, 0, (Circle_Precition + 2) * 3 * sizeof(GLfloat), hitPointVertexs);
     delete[] hitPointVertexs;
+    updateMotionResult();
 }
 
 GLfloat *MotionArea::generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider) {
@@ -201,7 +226,7 @@ GLfloat *MotionArea::generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,
     circleVertexs[1] = ry;
     circleVertexs[2] = 0;
 
-    const GLfloat anglePerSegment = ((360.0f/divider) / 360.0f) * TWOPI;
+    const GLfloat anglePerSegment = ((360.0f/divider) / 360.0f) * ES_TWOPI;
     GLfloat angle = 0.0f;
     for (int i = 1; i < (divider + 2); i ++) {
         circleVertexs[i * 3] = rx + cos(angle) * radius;
@@ -217,6 +242,14 @@ void MotionArea::render() {
     if(isActive) {
         hitPoint->render(GL_TRIANGLE_FAN);
     }
+}
+
+void MotionArea::updateMotionResult() {
+    vec2 hitpointVec = glm::normalize(vec2((posx1 - posx), (posy1 - posy)));
+    angle = glm::orientedAngle(hitpointVec, vec2(-1.0, 0.0));
+    factor = sqrt(pow((posx1 - posx), 2.0f) + pow((posy1 - posy), 2.0f)) / radius;
+//    cout << "angle=" << angle << "  degrees=" <<
+//            ES_TO_DEGREES(angle) << "  factor=" << factor << endl;
 }
 
 //---------------------OnMotionControlLayerListener---------------------------
@@ -243,14 +276,16 @@ void OnMotionControlLayerListener::onMotionMove(int32_t pointerId, float downX, 
         if(controlLayer->leftPanel->checkPoint(downX, downY) == TRUE) {
             controlLayer->leftPanel->updateHitPoint(downX, downY);
         } else {
-            controlLayer->leftPanel->removeHitPoint();
+            // do nothing
+//            controlLayer->leftPanel->removeHitPoint();
         }
     }
     if(controlLayer->rightPanel->isActive == TRUE && controlLayer->rightPanel->pointerId == pointerId){
         if(controlLayer->rightPanel->checkPoint(downX, downY) == TRUE) {
             controlLayer->rightPanel->updateHitPoint(downX, downY);
         } else {
-            controlLayer->rightPanel->removeHitPoint();
+            // do nothing
+//            controlLayer->rightPanel->removeHitPoint();
         }
     }
 }
@@ -264,3 +299,4 @@ void OnMotionControlLayerListener::onMotionUp(int32_t pointerId, float downX, fl
         controlLayer->rightPanel->removeHitPoint();
     }
 }
+

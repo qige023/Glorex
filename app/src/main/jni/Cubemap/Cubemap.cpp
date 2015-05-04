@@ -1,19 +1,19 @@
 #include "Cubemap.h"
 
-#include "esutil.h"
+// Std. Includes
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-
-#include "loader/stbloader.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
-using glm::vec3;
-using glm::vec4;
+//Glorex Includes
+#include "esutil.h"
+#include "loader/stbloader.h"
 
+//GLM Includes
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -24,18 +24,16 @@ Cubemap::Cubemap() {
 Cubemap::~Cubemap() {
 //    delete cube;
     delete skybox;
+    delete camera;
 }
 
 void Cubemap::initScene(ESContext *esContext) {
     cout << "exec Cubemap::initScene" << endl;
 
-    controlLayer = new ControlLayer();
-    controlLayer->initLayer(esContext);
-
     compileAndLinkShader();
 
-    // Define the viewport dimensions
-    glViewport(0, 0, esContext->width, esContext->height);
+    controlLayer = new ControlLayer();
+    controlLayer->initLayer(esContext);
 
     // Enables depth-buffer for hidden surface removal
     glEnable(GL_DEPTH_TEST);
@@ -45,6 +43,8 @@ void Cubemap::initScene(ESContext *esContext) {
 
 //    cube = new VBOCube(1.0f);
    skybox = new VBOSkybox();
+
+   camera = new ESCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 
    // Cubemap (Skybox)
    skyboxFaces.push_back("media/skybox/greenroad/right.jpg");
@@ -59,18 +59,45 @@ void Cubemap::initScene(ESContext *esContext) {
     model = mat4(1.0f);
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
-    view = mat4(1.0f);
-    view *= glm::lookAt(vec3(0.0f,0.0f,0.0f), vec3(0.0f,0.0f,-1.0f), vec3(0.0f,1.0f,0.0f));
+    // Remove any translation component of the view matrix;
+    view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
     cout << "View Matrix" << glm::to_string(view) << endl;
 
-    projection = glm::perspective(glm::radians(45.0f), (float) esContext->width / esContext->height,
-            0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(camera->Zoom),
+            (float) esContext->width / esContext->height, 0.1f, 100.0f);
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
 }
 
 void Cubemap::update(ESContext *esContext, float deltaTime) {
+    float angle, factor, degree;
+    ESboolean isLeftPanelActive = controlLayer->getPanelState(ControlLayer::LEFT_PANEL, angle, factor);
+    if(isLeftPanelActive == TRUE) {
+        degree = ES_TO_DEGREES(angle);
+        if(degree > 45.0f && degree <= 135.0f) {
+            camera->ProcessKeyboard(FORWARD, deltaTime);
+        } else if(degree > 135.0f || degree <= -135.0f) {
+            camera->ProcessKeyboard(RIGHT, deltaTime);
+        } else if(degree <= -45.0f && degree > -135.0f) {
+            camera->ProcessKeyboard(BACKWARD, deltaTime);
+        } else if(degree > -45.0f && degree <= 45.0f) {
+            camera->ProcessKeyboard(FORWARD, deltaTime);
+        }
+    }
 
+    ESboolean isRightPanelActive = controlLayer->getPanelState(ControlLayer::RIGHT_PANEL, angle, factor);
+    if(isRightPanelActive == TRUE) {
+        degree = ES_TO_DEGREES(angle);
+        if(degree > 45.0f && degree <= 135.0f) {
+            camera->ProcessMouseMovement(0, factor);
+        } else if(degree > 135.0f || degree <= -135.0f) {
+            camera->ProcessMouseMovement(factor, 0);
+        } else if(degree <= -45.0f && degree > -135.0f) {
+            camera->ProcessMouseMovement(0, -factor);
+        } else if(degree > -45.0f && degree <= 45.0f) {
+            camera->ProcessMouseMovement(-factor, 0);
+        }
+    }
 }
 
 void Cubemap::render(ESContext *esContext) {
@@ -84,6 +111,7 @@ void Cubemap::render(ESContext *esContext) {
     glActiveTexture(GL_TEXTURE0);
     prog.setUniform("skybox", 0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+    view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
     setMatrices();
     skybox->render();
     glDepthMask(GL_TRUE);

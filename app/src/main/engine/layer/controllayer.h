@@ -1,17 +1,17 @@
 #ifndef CONTROLLAYER_H
 #define CONTROLLAYER_H
 
-#include "escontext.h"
-#include "esprogram.h"
-#include "vboshape.h"
-
 #include <string>
-using std::string;
 #include <map>
+using std::string;
 using std::map;
 
 #include <glm/glm.hpp>
 using glm::mat4;
+
+#include "escontext.h"
+#include "esprogram.h"
+#include "vboshape.h"
 
 class ControlLayer;
 
@@ -34,9 +34,11 @@ public:
     // hitPoint area for showing where current user touching
     VBOShape *hitPoint;
     GLfloat posx1, posy1, radius1;
-
     // mark is user hitting in the motion area
     ESboolean isActive;
+    // angle of current hitting point
+    GLfloat angle;
+    GLfloat factor;
     // pointerId from multi-touch
     int32_t pointerId;
 
@@ -45,6 +47,9 @@ public:
     void addHitPoint(GLfloat rx, GLfloat ry);
     void updateHitPoint(GLfloat rx, GLfloat ry);
     void removeHitPoint();
+
+private:
+    void updateMotionResult();
     GLfloat *generateCircleVertexs(GLfloat radius,GLfloat rx,GLfloat ry,GLint divider);
 };
 
@@ -79,6 +84,8 @@ private:
     void compileAndLinkShader();
 
 public:
+    const static int LEFT_PANEL = 0;
+    const static int RIGHT_PANEL = 1;
 
     ControlLayer();
 
@@ -104,6 +111,8 @@ public:
      Called when layer is resized
      */
     void resize(ESContext *esContext);
+
+    ESboolean getPanelState(int panelNum, float &angle, float &factor);
 };
 
 #endif // CONTROLLAYER_H

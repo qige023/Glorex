@@ -5,6 +5,7 @@
 
 #include "esscene.h"
 #include "esprogram.h"
+#include "escamera.h"
 #include "vbos/vboskybox.h"
 #include "layer/controllayer.h"
 
@@ -12,12 +13,15 @@
 using std::vector;
 
 #include <glm/glm.hpp>
+using glm::vec3;
+using glm::vec4;
 using glm::mat4;
 
 class Cubemap : public ESScene
 {
 private:
     ESProgram prog;
+    ESCamera *camera;
     ControlLayer *controlLayer;
 
     VBOCube *cube;
