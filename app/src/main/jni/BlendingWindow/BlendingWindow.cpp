@@ -80,7 +80,7 @@ void BlendingWindow::initScene(ESContext *esContext) {
     floorTexture = STBLoader::loadTex("media/texture/metal.png");
     windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", true);
 
-    camera = new ESCamera(glm::vec3(0.0f, 0.0f, 5.0f));
+    camera = new ESCamera(glm::vec3(0.0f, 1.0f, 5.0f));
     view = camera->GetViewMatrix();
     cout << "View Matrix" << glm::to_string(view) << endl;
 
@@ -100,10 +100,10 @@ void BlendingWindow::update(ESContext *esContext, float deltaTime) {
             camera->ProcessKeyboard(FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
             camera->ProcessKeyboard(RIGHT, deltaTime);
-        } else if(degree <= -45.0f && degree > -135.0f) {
+        } else if(degree > -135.0f && degree <= -45.0f) {
             camera->ProcessKeyboard(BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->ProcessKeyboard(LEFT, deltaTime);
         }
     }
 
@@ -114,7 +114,7 @@ void BlendingWindow::update(ESContext *esContext, float deltaTime) {
             camera->ProcessMouseMovement(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
             camera->ProcessMouseMovement(factor, 0);
-        } else if(degree <= -45.0f && degree > -135.0f) {
+        } else if(degree > -135.0f && degree <= -45.0f) {
             camera->ProcessMouseMovement(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
             camera->ProcessMouseMovement(-factor, 0);
@@ -122,6 +122,7 @@ void BlendingWindow::update(ESContext *esContext, float deltaTime) {
     }
 
     // Sort windows
+    sortedWindowPostions.clear();
     for (GLuint i = 0; i < windowPostions.size(); i++) {
         GLfloat distance = glm::length(camera->Position - windowPostions[i]);
         sortedWindowPostions[distance] = windowPostions[i];

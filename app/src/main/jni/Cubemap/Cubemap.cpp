@@ -78,10 +78,10 @@ void Cubemap::update(ESContext *esContext, float deltaTime) {
             camera->ProcessKeyboard(FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
             camera->ProcessKeyboard(RIGHT, deltaTime);
-        } else if(degree <= -45.0f && degree > -135.0f) {
+        } else if(degree > -135.0f && degree <= -45.0f) {
             camera->ProcessKeyboard(BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->ProcessKeyboard(LEFT, deltaTime);
         }
     }
 
@@ -92,7 +92,7 @@ void Cubemap::update(ESContext *esContext, float deltaTime) {
             camera->ProcessMouseMovement(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
             camera->ProcessMouseMovement(factor, 0);
-        } else if(degree <= -45.0f && degree > -135.0f) {
+        } else if(degree > -135.0f && degree <= -45.0f) {
             camera->ProcessMouseMovement(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
             camera->ProcessMouseMovement(-factor, 0);
@@ -103,7 +103,6 @@ void Cubemap::update(ESContext *esContext, float deltaTime) {
 void Cubemap::render(ESContext *esContext) {
 
     // Clear buffers
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //This way the skybox will always be drawn at the background of all the other objects.
