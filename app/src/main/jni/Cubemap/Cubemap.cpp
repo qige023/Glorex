@@ -47,12 +47,18 @@ void Cubemap::initScene(ESContext *esContext) {
    camera = new ESCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 
    // Cubemap (Skybox)
-   skyboxFaces.push_back("media/skybox/greenroad/right.jpg");
-   skyboxFaces.push_back("media/skybox/greenroad/left.jpg");
-   skyboxFaces.push_back("media/skybox/greenroad/top.jpg");
-   skyboxFaces.push_back("media/skybox/greenroad/bottom.jpg");
-   skyboxFaces.push_back("media/skybox/greenroad/back.jpg");
-   skyboxFaces.push_back("media/skybox/greenroad/front.jpg");
+   skyboxFaces.push_back("media/skybox/valley/right.jpg");
+   skyboxFaces.push_back("media/skybox/valley/left.jpg");
+   skyboxFaces.push_back("media/skybox/valley/top.jpg");
+   skyboxFaces.push_back("media/skybox/valley/bottom.jpg");
+   skyboxFaces.push_back("media/skybox/valley/back.jpg");
+   skyboxFaces.push_back("media/skybox/valley/front.jpg");
+//   skyboxFaces.push_back("media/skybox/stonegods/right.tga");
+//   skyboxFaces.push_back("media/skybox/stonegods/left.tga");
+//   skyboxFaces.push_back("media/skybox/stonegods/top.tga");
+//   skyboxFaces.push_back("media/skybox/stonegods/bottom.tga");
+//   skyboxFaces.push_back("media/skybox/stonegods/back.tga");
+//   skyboxFaces.push_back("media/skybox/stonegods/front.tga");
 
    skyboxTexture = STBLoader::loadCubemap(skyboxFaces);
 
