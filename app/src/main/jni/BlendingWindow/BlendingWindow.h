@@ -1,28 +1,31 @@
 #ifndef BlendingWindow_H
 #define BlendingWindow_H
 
-#include "vbos/vbocube.h"
-#include "vboshape.h"
-
-#include "esscene.h"
-#include "esprogram.h"
-
 #include <vector>
 #include <map>
 
-#include <glm/glm.hpp>
-
 using std::vector;
 using std::map;
+
+#include <glm/glm.hpp>
 
 using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
+#include "esscene.h"
+#include "esprogram.h"
+#include "escamera.h"
+#include "vbos/vboshape.h"
+#include "vbos/vbocube.h"
+#include "layer/controllayer.h"
+
 class BlendingWindow : public ESScene {
 
 private:
     ESProgram prog;
+    ESCamera *camera;
+    ControlLayer *controlLayer;
 
     VBOCube *cube;
     VBOShape *floor;
