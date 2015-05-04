@@ -42,11 +42,13 @@ builds and test on the following platforms:
 API Level 18+ on Android 4.3+ (It's the minimal version of Android that support GLES 3.0 :D )
 
 ## Builds ##
-need Android sdk & ndk installed
+Need Android sdk & ndk installed
 
-need Android Studio or Eclipse(with CDT and Gradle plugins) 
+Need Android Studio or Eclipse(with CDT and Gradle plugins) 
 
-import gradle project, build and enjoy...
+For some demos libfreetype.a and libassimp.a is needed for build. You can find some useful link and hints about cross compile skills from docs/reference.md.(the static library file(libxxx.a files) are so big that I wan't upload them to repository,you can contact me in email, if you have any trouble in building these libs)
+
+Import gradle project, build and enjoy...
 
 to be add..
 
