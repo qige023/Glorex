@@ -7,16 +7,16 @@
 #include <map>
 #include <vector>
 using namespace std;
-// GL Includes
-#include <GL/glew.h> // Contains all the necessery OpenGL includes
+
+#include "esutil.h"
+#include <SOIL.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <SOIL.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
-#include <learnopengl/mesh.h>
+#include <esmesh.h>
 
 GLint TextureFromFile(const char* path, string directory);
 

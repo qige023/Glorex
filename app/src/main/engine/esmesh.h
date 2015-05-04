@@ -7,7 +7,7 @@
 #include <vector>
 using namespace std;
 // GL Includes
-#include <esutil.h> // Contains all the necessery OpenGL includes
+#include "esutil.h" // Contains all the necessery OpenGL includes
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -63,9 +63,7 @@ public:
                 ss << specularNr++; // Transfer GLuint to stream
             number = ss.str();
             // Now set the sampler to the correct texture unit
-            glUniform1f(
-                    glGetUniformLocation(shader.Program,
-                            (name + number).c_str()), i);
+            glUniform1f(glGetUniformLocation(shader.Program,(name + number).c_str()), i);
             // And finally bind the texture
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         }

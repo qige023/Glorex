@@ -36,6 +36,11 @@ cd path-to-freetype
 make install DESTDIR=your-path-to-build-freetype
 ```
 
+## Assimp Cross Compile ##
+[使用ANDROID NDK编译ASSIMP](http://airtheva.net/wordpress/?p=62)
+
+[android-cmake-toolchains](https://github.com/taka-no-me/android-cmake)
+
 ## C++ ##
 [C++ callback for non-static function between different classes](http://stackoverflow.com/questions/11522422/c-callback-for-non-static-function-between-different-classes?rq=1)
 
