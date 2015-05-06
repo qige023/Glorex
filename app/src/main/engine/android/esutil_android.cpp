@@ -29,7 +29,7 @@ extern ESScene *esCreateScene(ESContext *esContext);
 static int esMain(ESContext *esContext) {
     cout << "exec esMain..." << endl;
     ESScene *scene = esCreateScene(esContext);
-    AAssetManager *assetManager = ( AAssetManager * ) esContext->platformData;
+    AAssetManager *assetManager = (( ANativeActivity * ) esContext->platformData)->assetManager;
     ESFileWrapper::setAssetmanager(assetManager);
 
     if(scene != NULL) {
@@ -77,7 +77,7 @@ static void HandleCommand(struct android_app *pApp, int32_t cmd) {
 
     case APP_CMD_INIT_WINDOW:
         cout << "HandleCommand APP_CMD_INIT_WINDOW" << endl;
-        esContext->platformData = (void *) pApp->activity->assetManager;
+        esContext->platformData = (void *) pApp->activity;
 
         esContext->eglNativeDisplay = EGL_DEFAULT_DISPLAY;
         esContext->eglNativeWindow = pApp->window;

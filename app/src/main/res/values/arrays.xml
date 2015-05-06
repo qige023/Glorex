@@ -7,6 +7,7 @@
         <item>Instancing</item>
         <item>Flag Floating Effect</item>
         <item>Cubemap</item>
+        <item>Nanosuit Model</item>
         <item>Rendering Text</item>
         <item>Blending Window</item>
         <item>Diffuse Torus</item>
@@ -19,6 +20,7 @@
         <item>Instancing</item>
         <item>FlagEffect</item>
         <item>Cubemap</item>
+        <item>Nanosuit</item>
         <item>RenderingText</item>
         <item>BlendingWindow</item>
         <item>TorusDiffuse</item>

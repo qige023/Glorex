@@ -1,6 +1,6 @@
 Reference
 ===============================
-some useful link might help...
+some useful link and steps
 
 ## FreeType Cross Compile ##
 
@@ -29,7 +29,7 @@ export PATH=/home/vicky/mytoolchain/arm-linux-androideabi/bin:$PATH
 make -j4
 ```
 
-* when see apinames file error
+* when see apinames file error (because the it try to exec the arm version apinames file, we just replace it to PC version apinamesfile)
 ```
 copy path-to-freetype-local/objs/apinames to path-to-freetype/objs/apinames
 cd path-to-freetype
@@ -37,9 +37,69 @@ make install DESTDIR=your-path-to-build-freetype
 ```
 
 ## Assimp Cross Compile ##
+
 [使用ANDROID NDK编译ASSIMP](http://airtheva.net/wordpress/?p=62)
 
-[android-cmake-toolchains](https://github.com/taka-no-me/android-cmake)
+* check out [assimp](https://github.com/assimp/assimp)  and switch to branch *opengex_support*
+```
+git checkout opengex_support
+```
+
+* check out [android-cmake-toolchains](https://github.com/taka-no-me/android-cmake)
+
+* install cmake-gui (cmake version should 2.8+)
+```
+sudo apt-get install cmake-gui
+```
+
+* export ANDROID_NDK to path
+```
+ export ANDROID_NDK=you-path-to-ANDROID-NDK
+```
+
+* configure cmake-gui
+```
+specify Source as Assimp source directory。
+specify Build as working directory(better different from souce)。
+press Configure,
+choose Specify toolchain file for cross-compiling
+specify your path to android-cmake-toolchains
+
+mark BUILD_SHARED_LIBS
+mark ASSIMP_NO_EXPORT
+mark ASSIMP_ENABLE_BOOST_WORKAROUND
+unmark ASSIMP_ANDROID_JNIIOSYSTEM (useful, but it has some problems for us to build, so forget it currently)
+
+press Configure
+press Generate
+```
+
+* modify build.make file manually to prevent the version number behind the .so file extension
+```
+ cd you-path-to-build-assimp/code/CMakeFiles
+ 1) open build.make
+ replace code/libassimp.so.3.1.1 to code/libassimp.so
+ 
+ remove these lines:
+    cd /home/vicky/Projects/assimp-build/code && $(CMAKE_COMMAND) -E cmake_symlink_library libassimp.so.3.1.1 libassimp.so.3 libassimp.so
+
+code/libassimp.so.3: code/libassimp.so.3.1.1
+
+code/libassimp.so: code/libassimp.so.3.1.1
+
+  2) open link.txt 
+  
+  repace -soname,libassimp.so.3 -o libassimp.so.3.1.1 
+  to -soname,libassimp.so -o libassimp.so
+```
+
+* make and make install
+```
+    make
+    make install
+    get libassimp.so in ./code
+    get include files in your install directory or just paste from assimp source include folders is OK
+```
 
 ## C++ ##
 [C++ callback for non-static function between different classes](http://stackoverflow.com/questions/11522422/c-callback-for-non-static-function-between-different-classes?rq=1)
@@ -54,3 +114,5 @@ make install DESTDIR=your-path-to-build-freetype
 [Opengl分格化（libtess）移植与使用](http://blog.csdn.net/wind_hzx/article/details/11830425)
 
 [import-module的注意事项与NDK_MODULE_PATH的配置](http://blog.sina.com.cn/s/blog_4057ab62010197z8.html)
+
+[Android Assets IOSystem(I have tried but it can't work)](https://github.com/assimp/assimp/tree/master/port/AndroidJNI)

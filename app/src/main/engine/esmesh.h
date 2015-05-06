@@ -1,13 +1,14 @@
 #pragma once
 // Std. Includes
 #include <string>
-#include <fstream>
 #include <sstream>
-#include <iostream>
 #include <vector>
 using namespace std;
+
 // GL Includes
 #include "esutil.h" // Contains all the necessery OpenGL includes
+#include "esprogram.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -47,7 +48,7 @@ public:
     }
 
     // Render the mesh
-    void Draw(Shader shader) {
+    void draw(ESProgram &prog) {
         // Bind appropriate textures
         GLuint diffuseNr = 1;
         GLuint specularNr = 1;
@@ -63,7 +64,7 @@ public:
                 ss << specularNr++; // Transfer GLuint to stream
             number = ss.str();
             // Now set the sampler to the correct texture unit
-            glUniform1f(glGetUniformLocation(shader.Program,(name + number).c_str()), i);
+            prog.setUniform((name + number).c_str(), i);
             // And finally bind the texture
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         }

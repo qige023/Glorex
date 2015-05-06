@@ -11,7 +11,7 @@
 #define TRUE 1
 #endif
 #ifndef ESboolean
-#define ESboolean GLboolean
+#define ESboolean unsigned char
 #endif
 
 ///

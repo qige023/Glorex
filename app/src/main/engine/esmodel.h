@@ -1,26 +1,25 @@
 #pragma once
 // Std. Includes
 #include <string>
-#include <fstream>
-#include <sstream>
 #include <iostream>
 #include <map>
 #include <vector>
 using namespace std;
 
 #include "esutil.h"
-#include <SOIL.h>
+#include "esfile.h"
+#include "esprogram.h"
+#include "loader/stbloader.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <esmesh.h>
 
-GLint TextureFromFile(const char* path, string directory);
-
-class Model {
+class ESModel {
 public:
     /*  Model Data */
     vector<Texture> textures_loaded;// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
@@ -29,29 +28,30 @@ public:
 
     /*  Functions   */
     // Constructor, expects a filepath to a 3D model.
-    Model(GLchar* path) {
-        this->loadModel(path);
+    ESModel(ESContext *esContext, string path) {
+        this->loadModel(esContext, path);
     }
 
     // Draws the model, and thus all its meshes
-    void Draw(Shader shader) {
+    void draw(ESProgram &prog) {
         for (GLuint i = 0; i < this->meshes.size(); i++)
-            this->meshes[i].Draw(shader);
+            this->meshes[i].draw(prog);
     }
 
 private:
     /*  Functions   */
     // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-    void loadModel(string path) {
+    void loadModel(ESContext *esContext, string path) {
         // Read file via ASSIMP
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path,
+        Assimp::Importer* importer = new Assimp::Importer();
+
+        const aiScene* scene = importer->ReadFile(path,
                 aiProcess_Triangulate | aiProcess_FlipUVs);
         // Check for errors
         if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE
                 || !scene->mRootNode) // if is Not Zero
                 {
-            cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
+            cout << "ERROR::ASSIMP:: " << importer->GetErrorString() << endl;
             return;
         }
         // Retrieve the directory path of the filepath
@@ -162,7 +162,14 @@ private:
             }
             if (!skip) {   // If texture hasn't been loaded already, load it
                 Texture texture;
-                texture.id = TextureFromFile(str.C_Str(), this->directory);
+
+                string filename = str.C_Str();
+                filename = directory + '/' + filename;
+
+                //http://stackoverflow.com/a/16502000
+                //string str = "some string" ;
+                //char *cstr = &str[0u];
+                texture.id =  STBLoader::loadTex( &filename[0u], false, ESFileWrapper::FOPEN_ABSOLUTE_MODE);
                 texture.type = typeName;
                 texture.path = str;
                 textures.push_back(texture);
@@ -172,29 +179,3 @@ private:
         return textures;
     }
 };
-
-GLint TextureFromFile(const char* path, string directory) {
-    //Generate texture ID and load texture data
-    string filename = string(path);
-    filename = directory + '/' + filename;
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    int width, height;
-    unsigned char* image = SOIL_load_image(filename.c_str(), &width, &height, 0,
-            SOIL_LOAD_RGB);
-    // Assign texture to ID
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-            GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap (GL_TEXTURE_2D);
-
-    // Parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-            GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    SOIL_free_image_data(image);
-    return textureID;
-}

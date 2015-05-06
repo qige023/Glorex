@@ -22,8 +22,8 @@
         </activity>
         <activity
             android:name=".stubs.HelloTriangle"
-            android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <meta-data
                 android:name="android.app.lib_name"
@@ -109,6 +109,14 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="TeapotTwoSide" />
+        </activity>
+                <activity
+            android:name=".stubs.Nanosuit"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="Nanosuit" />
         </activity>
     </application>
 

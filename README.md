@@ -46,7 +46,7 @@ Need Android sdk & ndk installed
 
 Need Android Studio or Eclipse(with CDT and Gradle plugins) 
 
-For some demos libfreetype.a and libassimp.a is needed for build. You can find some useful link and hints about cross compile skills from docs/reference.md.(the static library file(libxxx.a files) are so big that I wan't upload them to repository,you can contact me in email, if you have any trouble in building these libs)
+For some demos libfreetype.a and libassimp.so is needed for build. Here i provide my working complied  version(tested on Android 4.3).But you can find some useful link and hints about cross compile skills from docs/reference.md.
 
 Import gradle project, build and enjoy...
 

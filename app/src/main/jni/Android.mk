@@ -1,9 +1,14 @@
-include $(call all-subdir-makefiles)
-#JNI_ROOT:= $(call my-dir)
-#include $(CLEAR_VARS)
+BUILD_ALL := TRUE
 
-#include $(JNI_ROOT)/HelloTriangle/Android.mk
-#include $(JNI_ROOT)/Instancing/Android.mk
-#include $(JNI_ROOT)/SimpleVertexShader/Android.mk
-#include $(JNI_ROOT)/SimpleTexture/Android.mk
-#include $(JNI_ROOT)/TorusDiffuse/Android.mk
+ifeq ($(BUILD_ALL),TRUE)
+	include $(call all-subdir-makefiles)
+else
+	JNI_ROOT:= $(call my-dir)
+	include $(CLEAR_VARS)
+	
+	#include $(JNI_ROOT)/Nanosuit/Android.mk
+	#include $(JNI_ROOT)/Instancing/Android.mk
+	#include $(JNI_ROOT)/SimpleVertexShader/Android.mk
+	#include $(JNI_ROOT)/SimpleTexture/Android.mk
+	#include $(JNI_ROOT)/TorusDiffuse/Android.mk
+endif

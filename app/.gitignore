@@ -6,4 +6,5 @@
 *.project
 *.classpath
 /Debug/
-/libs
+# /libs
+# /src/main/assets/model

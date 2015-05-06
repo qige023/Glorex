@@ -1,5 +1,4 @@
 #include "stbloader.h"
-#include "esfile.h"
 
 #include <iostream>
 using std::cout;
@@ -10,12 +9,12 @@ using std::endl;
 #include "stb_image.h"
 
 GLubyte* STBLoader::load(const char *filename, GLint &width,
-        GLint &height, GLint &channels, GLint req_comp, GLboolean needFlip) {
+        GLint &height, GLint &channels, GLint req_comp, int fOpenMode, GLboolean needFlip) {
 
     FILE *pFile = NULL;
 
     //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
-    pFile = ESFileWrapper::esFopen(filename, "r");
+    pFile = ESFileWrapper::esFopen(filename, "r", fOpenMode);
 
     GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, req_comp);
     fclose(pFile);
@@ -30,9 +29,9 @@ GLubyte* STBLoader::load(const char *filename, GLint &width,
     }
 }
 
-GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels, GLboolean alpha) {
+GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels, GLboolean alpha, int fOpenMode) {
 
-    GLubyte * data = STBLoader::load(fName, width, height, chennels, alpha ? 4 : 3);
+    GLubyte * data = STBLoader::load(fName, width, height, chennels, alpha ? 4 : 3, fOpenMode, TRUE);
 
     if (data != NULL) {
         GLuint texID;
@@ -60,9 +59,9 @@ GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint
     return 0;
 }
 
-GLuint STBLoader::loadTex(const char* fName, GLboolean alpha) {
+GLuint STBLoader::loadTex(const char* fName, GLboolean alpha, int fOpenMode) {
     GLint w, h, c;
-    return STBLoader::loadTex(fName, w, h, c, alpha);
+    return STBLoader::loadTex(fName, w, h, c, alpha, fOpenMode);
 }
 
 GLuint STBLoader::loadCubemap(vector<const GLchar*> faces) {
@@ -74,7 +73,7 @@ GLuint STBLoader::loadCubemap(vector<const GLchar*> faces) {
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     for(GLuint i = 0; i < faces.size(); i++) {
-        image = STBLoader::load(faces[i], width, height, chennels, 3, false);
+        image = STBLoader::load(faces[i], width, height, chennels, 3, ESFileWrapper::FOPEN_DEFAULT_MODE, FALSE);
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
         delete[] image;
     }

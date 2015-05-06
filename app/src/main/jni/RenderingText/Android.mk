@@ -20,8 +20,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(ENGINE_INC_PATH) \
                     $(ENGINE_INC_PATH)/android \
                     $(ENGINE_INC_PATH)/vbos \
-                    $(ENGINE_INC_PATH)/loader \
-                    $(ENGINE_INC_PATH)/freetype
+                    $(ENGINE_INC_PATH)/loader
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
 

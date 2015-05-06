@@ -40,18 +40,21 @@
 #endif
 
 
-FILE *ESFileWrapper::esFopen(const char *fileName, const char* mode) {
+FILE *ESFileWrapper::esFopen(const char *fileName, const char* mode, int fOpenMode) {
     FILE *file;
 #ifdef ANDROID
-    if ( androidAssetManager != NULL ) {
+
+    if ( fOpenMode == FOPEN_DEFAULT_MODE && androidAssetManager != NULL ) {
         file = android_fopen(fileName, mode);
+    } else if (fOpenMode == FOPEN_ABSOLUTE_MODE) {
+        file = fopen(fileName, mode);
+        return file;
     }
 #else
 #ifdef __APPLE__
     // iOS: Remap the filename to a path that can be opened from the bundle.
     fileName = GetBundleFileName ( fileName );
 #endif
-    file = fopen(fileName, mode);
 #endif
     return file;
 }
