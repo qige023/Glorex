@@ -18,6 +18,7 @@ private:
     ESModel *nanosuit;
     ESCamera *camera;
     ControlLayer *controlLayer;
+    static vec3 pointLightPositions[2];
 
     mat4 model;
     mat4 view;

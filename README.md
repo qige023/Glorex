@@ -52,6 +52,9 @@ Import gradle project, build and enjoy...
 
 to be add..
 
+## Run Demos ##
+For Nanosuit Demo, you must place project's sdcard/model folder to your phone's sdcard/Glorex/model .
+
 ## Special Thanks ##
 *Some parts of framework code inspired by:*
 

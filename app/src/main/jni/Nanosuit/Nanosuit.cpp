@@ -25,6 +25,12 @@ Nanosuit::~Nanosuit() {
     delete nanosuit;
 }
 
+// Point light positions
+vec3 Nanosuit::pointLightPositions[] = {
+   vec3(2.3f, -1.6f, -3.0f),
+   vec3(-1.7f, 0.9f, 1.0f)
+};
+
 void Nanosuit::initScene(ESContext *esContext) {
     cout << "exec Nanosuit::initScene" << endl;
 
@@ -57,7 +63,7 @@ void Nanosuit::initScene(ESContext *esContext) {
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
     // Set background color
-    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void Nanosuit::update(ESContext *esContext, float deltaTime) {
@@ -105,7 +111,28 @@ void Nanosuit::render(ESContext *esContext) {
 }
 
 void Nanosuit::setMatrices() {
-    prog.setUniform("MVP", projection * view * model);
+    prog.setUniform("model", model);
+    prog.setUniform("view", view);
+    prog.setUniform("projection", projection);
+
+    // Point light 1
+    prog.setUniform("viewPos", camera->Position.x, camera->Position.y, camera->Position.z);
+    prog.setUniform("pointLights[0].position", pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z);
+    prog.setUniform("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+    prog.setUniform("pointLights[0].diffuse", 1.0f, 1.0f, 1.0f);
+    prog.setUniform("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+    prog.setUniform("pointLights[0].constant", 1.0f);
+    prog.setUniform("pointLights[0].linear", 0.009f);
+    prog.setUniform("pointLights[0].quadratic", 0.0032f);
+
+    // Point light 2
+    prog.setUniform("pointLights[1].position", pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z);
+    prog.setUniform("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+    prog.setUniform("pointLights[1].diffuse", 1.0f, 1.0f, 1.0f);
+    prog.setUniform("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+    prog.setUniform("pointLights[1].constant", 1.0f);
+    prog.setUniform("pointLights[1].linear", 0.009f);
+    prog.setUniform("pointLights[1].quadratic", 0.0032f);
 }
 
 void Nanosuit::resize(ESContext *esContext) {
