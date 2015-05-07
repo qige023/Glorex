@@ -118,9 +118,9 @@ public:
         }
     }
 
-    void displayTextUtf8(const char *text, GLfloat x, GLfloat y, GLfloat scale) {
+    void displayText(const char *text, GLfloat x, GLfloat y, GLfloat scale) {
         addCharactersUtf8(text);
-        renderText(text, x, y, scale);
+        renderTextUtf8(text, x, y, scale);
     }
 
     void addCharactersUtf8(const char *str) {
@@ -181,7 +181,7 @@ public:
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     }
 
-    void renderText(const char* text, GLfloat x, GLfloat y, GLfloat scale) {
+    void renderTextUtf8(const char* text, GLfloat x, GLfloat y, GLfloat scale) {
         // Activate corresponding render state
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(vaoHandle);
