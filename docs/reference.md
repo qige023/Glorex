@@ -109,6 +109,12 @@ code/libassimp.so: code/libassimp.so.3.1.1
 [Google C++ Style Guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.html)
 
 ## Others ##
+[Flexible and Economical UTF-8 Decoder](http://bjoern.hoehrmann.de/utf-8/decoder/dfa/)
+
+[std::wstring VS std::string](http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring)
+
+[Flexible and Economical UTF-8 Decoder](http://bjoern.hoehrmann.de/utf-8/decoder/dfa/)
+
 [stb_truetype解析ttf字体获取顶点信息](http://blog.csdn.net/wind_hzx/article/details/11830645)
 
 [Opengl分格化（libtess）移植与使用](http://blog.csdn.net/wind_hzx/article/details/11830425)

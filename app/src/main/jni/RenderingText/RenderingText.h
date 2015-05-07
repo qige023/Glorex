@@ -1,13 +1,16 @@
 #ifndef RenderingText_H
 #define RenderingText_H
 
+#include <map>
+using std::map;
+
+#include "glm/glm.hpp"
+using glm::mat4;
+
 #include "esutil.h"
 #include "esscene.h"
 #include "esprogram.h"
-#include <map>
-using std::map;
-#include <glm/glm.hpp>
-using glm::mat4;
+#include "escharacter.h"
 
 /// Holds all state information relevant to a character as loaded using FreeType
 struct Character {
@@ -20,13 +23,15 @@ struct Character {
 class RenderingText: public ESScene {
 private:
 
-    GLuint vboHandle;
-    GLuint vaoHandle;
+//    GLuint vboHandle;
+//    GLuint vaoHandle;
     ESProgram prog;
+
+    ESCharactersHolder *charactersHolder;
 
     mat4 projection;
 
-    map<GLchar, Character> Characters;
+//    map<GLchar, Character> Characters;
 
     void compileAndLinkShader();
 public:
@@ -37,7 +42,7 @@ public:
     void update(ESContext *esContext, float t );
     void render(ESContext *esContext);
     void resize(ESContext *esContext);
-    void renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+//    void renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 };
 
 #endif // RenderingText_H

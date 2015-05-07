@@ -7,7 +7,6 @@
 ///
 //  Includes
 //
-#include <stdlib.h>
 #include "esdef.h"
 #include "escontext.h"
 #include "esscene.h"
