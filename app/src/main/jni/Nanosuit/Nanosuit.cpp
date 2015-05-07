@@ -1,22 +1,22 @@
 #include "Nanosuit.h"
 
-#include "esutil.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-
-#include "loader/stbloader.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
-using glm::vec3;
-using glm::vec4;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+using glm::vec3;
+using glm::vec4;
+
+#include "esutil.h"
+#include "loader/stbloader.h"
 
 Nanosuit::Nanosuit() {
 }
@@ -63,7 +63,7 @@ void Nanosuit::initScene(ESContext *esContext) {
     cout << "Projection Matrix" << glm::to_string(projection) << endl;
 
     // Set background color
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.15f, 0.15f, 0.15f, 0.0f);
 }
 
 void Nanosuit::update(ESContext *esContext, float deltaTime) {
