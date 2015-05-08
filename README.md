@@ -5,7 +5,7 @@ A light-weight cross-platform 3D framework and oriented tools collection for Ope
 
 This repository contains Glorex source and the sample code for 10+ 3D demos using Glorex and native c/c++.
 
-*Currently this project's core code is under active development, not guarantee build successfully on master. But you still can get a previously builded well app from [here](http://www.github.com)*
+*Currently this project's core code is under active development, not guarantee build successfully on master. But you still can get a previously builded well app from [here](https://github.com/qige023/Glorex/releases/tag/v0.0.1)*
 
 ## Features ##
 * Focus on mobile(Android/IOS) OpenGL ES3.0+ only
@@ -32,21 +32,45 @@ to be add..
 
 ## Sample ##
 
-*below is two running demo from the branch "branch-c", witch is sample of simple vertex shader and basic light modal*
+*below are demo pics from the branch-master release tag v0.0.1*
 
- ![colorcube](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/colorcube.gif)
+ ![nanosuit](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/nanosuit.jpeg)
  
- ![diffusetorse](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/diffusetorse.gif)
+Nanosuit [Video On Youku.com](http://v.youku.com/v_show/id_XOTUwNTgxMzg4.html)
+
+ ![blendingwindow](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/blendingwindow.jpeg)
+Blending Window [Video On Youku.com](http://v.youku.com/v_show/id_XOTUwNTgxMzg4.html)
  
- to be add..
+ ![cubemap](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/cubemap.jpeg)
+ Cubemap [Video On Youku.com](http://v.youku.com/v_show/id_XOTUwNTc4MjM2.html)
+ 
+![floatingflag](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/floatingflag.jpeg)
+Floating Flag [Video On Youku.com](http://v.youku.com/v_show/id_XOTUwNTc1MTY4.html)
+
+![textrender](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/textrender.jpeg)
+Text Rending Multi-languare with "幼圆.ttf" fonttype 
+
+![simplevertexshader](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/simplevertexshader.jpeg)
+Simple Vertexshader 
+
+![simpletexture](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/simpletexture.jpeg)
+Simple Texture 
+
+![instancing](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/instancing.jpeg)
+
+![torusdiffuse](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/torusdiffuse.jpeg)
+
+![teacoptwoside](https://raw.githubusercontent.com/qige023/OpenGL-ES3-Programming-On-Android/master/docs/demopics/teacoptwoside.jpeg)
+
+*below are demo video from the branch-master release tag v0.0.1*
+
 
 ## Support Platforms ##
 This project currently target on Android only, IOS support will be in consider later
 
 builds and test on the following platforms:
 
-* Android 4.3+ NDK (C/C++)
-* Android 4.3+ SDK (Java)
+* Android 4.3+ NDK (C/C++) & SDK (Java)
 
 API Level 18+ on Android 4.3+ (It's the minimal version of Android that support GLES 3.0 :D )
 
