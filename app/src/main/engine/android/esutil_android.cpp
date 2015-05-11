@@ -1,24 +1,21 @@
 //
 //    This file contains the Android implementation of the windowing functions.
-
-///
-// Includes
-//
-
-#include "esutil.h"
-#include "esfile.h"
-#include "android/buf_android.hpp"
-
 #include <android/log.h>
 #include <android/keycodes.h>
 #include <android/input.h>
 #include <android_native_app_glue.h>
+
 #include <time.h>
+#include <iostream>
 #include <stdexcept>
 
 using std::cout;
 using std::cerr;
 using std::endl;
+
+#include "esutil.h"
+#include "esfile.h"
+#include "android/buf_android.hpp"
 
 ///
 //  Global extern.  The application must declare this function
@@ -82,8 +79,8 @@ static void HandleCommand(struct android_app *pApp, int32_t cmd) {
         esContext->eglNativeDisplay = EGL_DEFAULT_DISPLAY;
         esContext->eglNativeWindow = pApp->window;
 
-        std::cout.rdbuf(new outlogbuf());
-        std::cerr.rdbuf(new outlogbuf());
+        cout.rdbuf(new outlogbuf());
+        cerr.rdbuf(new outlogbuf());
 
         // Call the main entry point for the app
         if (esMain(esContext) != GL_TRUE) {
@@ -96,8 +93,8 @@ static void HandleCommand(struct android_app *pApp, int32_t cmd) {
         cout << "HandleCommand APP_CMD_TERM_WINDOW" << endl;
         delete esContext->scene;
 
-        std::cout.rdbuf(0);
-        std::cerr.rdbuf(0);
+        cout.rdbuf(0);
+        cerr.rdbuf(0);
 
         //reset esContext
         memset(esContext, 0, sizeof(ESContext));
@@ -216,7 +213,7 @@ void android_main(struct android_app *pApp) {
 
     lastTime = GetCurrentTime();
 
-    while (1) {
+    while (TRUE) {
         int ident;
         int events;
         struct android_poll_source *pSource;
