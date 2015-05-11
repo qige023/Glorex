@@ -1,11 +1,11 @@
 Glorex
 ===================================================
 
-A light-weight cross-platform 3D framework and oriented tools collection for OpenGL ES 3.0 on mobile.
+A light-weight cross-platform 3D framework and oriented tools collection for OpenGL ES 3.0 on mobile. Glorex dedicated to build real 3D scene on mobile. 
 
-This repository contains Glorex source and the sample code for 10+ 3D demos using Glorex and native c/c++.
+This repository contains Glorex source and the sample code for 10+ 3D demos using Glorex and native C/C++.
 
-*Currently this project's core code is under active development, not guarantee build successfully on master. But you still can download a previously builded well app from [here](https://github.com/qige023/Glorex/releases/tag/v0.0.1).* (Notice: support Android 4.3+ Only, and please read Run Demos Section)
+*Currently this project's core code is under active development, not guarantee build successfully on master. But you still can download a previously builded well app from [here](https://github.com/qige023/Glorex/releases/tag/v0.0.1).* (Notice: support Android 4.3+ Only and please read Run Demos Section)
 
 ## Features ##
 * Focus on mobile(Android/IOS) OpenGL ES3.0+ only
@@ -13,7 +13,7 @@ This repository contains Glorex source and the sample code for 10+ 3D demos usin
 * Text Rendering support (muti-language using UTF-8) 
 * Model import support
 * Multi-touch control support
-* Physics/ Collision Detection/ Animation /Scene Management (will coming soon)
+* Physics/ Collision Detection/ Animation /Scene Management (coming soon)
 * Nice framework and examples based on a couple of projects (see below)
 * Plenty demos (currently 10+ 3D demos) in a single demo app (see below)
 * Use Gradle for Building On Android, easy to build
@@ -25,7 +25,7 @@ This repository contains Glorex source and the sample code for 10+ 3D demos usin
 * [assimp](https://github.com/assimp/assimp) for asset import
 * [stb_image](https://github.com/nothings/stb) for image import
 * [freetype](http://www.freetype.org/) for TTF import
-* [bullet](https://github.com/bulletphysics/bullet3) 3D Real-Time Multiphysics Library
+* [bullet](https://github.com/bulletphysics/bullet3) 3D Real-Time Multiphysics Library (coming soon)
 
 ## Demos ##
 
@@ -98,6 +98,24 @@ Shader/Program Operating
   prog.setUniform("model", model);
 ```
 
+Texture loading
+```
+    //load textures
+    cubeTexture = STBLoader::loadTex("media/texture/marble.jpg");
+    floorTexture = STBLoader::loadTex("media/texture/metal.png");
+    //load textures with alpha channel
+    windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", STBLoader::CHANNEL_RGBA);
+    //load cubemaps
+    vector<const GLchar*> skyboxFaces;
+    skyboxFaces.push_back("media/skybox/valley/right.jpg");
+    skyboxFaces.push_back("media/skybox/valley/left.jpg");
+    skyboxFaces.push_back("media/skybox/valley/top.jpg");
+    skyboxFaces.push_back("media/skybox/valley/bottom.jpg");
+    skyboxFaces.push_back("media/skybox/valley/back.jpg");
+    skyboxFaces.push_back("media/skybox/valley/front.jpg");
+    skyboxTexture = STBLoader::loadCubemap(skyboxFaces);
+```
+
 Model loading
 ```
     //Import a obj file
@@ -126,26 +144,26 @@ MultiTouch Support
     if(isLeftPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->moveByDirection(ESCamera::FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessKeyboard(RIGHT, deltaTime);
+            camera->moveByDirection(ESCamera::RIGHT, deltaTime);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessKeyboard(BACKWARD, deltaTime);
+            camera->moveByDirection(ESCamera::BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(LEFT, deltaTime);
+            camera->moveByDirection(ESCamera::LEFT, deltaTime);
         }
     }
     ESboolean isRightPanelActive = controlLayer->getPanelState(ControlLayer::RIGHT_PANEL, angle, factor);
     if(isRightPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessMouseMovement(0, factor);
+            camera->rotate(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessMouseMovement(factor, 0);
+            camera->rotate(factor, 0);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessMouseMovement(0, -factor);
+            camera->rotate(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessMouseMovement(-factor, 0);
+            camera->rotate(-factor, 0);
         }
     }
     //render control layer
@@ -181,14 +199,15 @@ For Nanosuit Demo, you must place project's sdcard/model folder to your phone's 
 *Some parts of framework code inspired by:*
 
 * [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
+* [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
 * [Learn Opengl](http://www.learnopengl.com/)
 
 *Some examples and image assets borrow from:*
 
-* [OpenGL ES 3.0 Programming Guide](http://www.opengles-book.com)
-* [Nehe OpenGL's Lesson](http://nehe.gamedev.net/)
 * [OpenGL Shader Language Cookbook](https://github.com/daw42/glslcookbook)
 * [Learn Opengl](http://www.learnopengl.com/)
+* [Nehe OpenGL's Lesson](http://nehe.gamedev.net/)
+* [OGLdev](http://ogldev.atspace.co.uk/)
 
 *Please contact me if some demo assets need more license granted or has free use limitation*
 
