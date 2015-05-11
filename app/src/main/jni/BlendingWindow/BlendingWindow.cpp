@@ -78,10 +78,10 @@ void BlendingWindow::initScene(ESContext *esContext) {
 
     cubeTexture = STBLoader::loadTex("media/texture/marble.jpg");
     floorTexture = STBLoader::loadTex("media/texture/metal.png");
-    windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", true);
+    windowTexture = STBLoader::loadTex("media/texture/blending_transparent_window.png", STBLoader::CHANNEL_RGBA);
 
     camera = new ESCamera(glm::vec3(0.0f, 1.0f, 5.0f));
-    view = camera->GetViewMatrix();
+    view = camera->getViewMatrix();
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(camera->Zoom), (float) esContext->width / esContext->height,
@@ -97,13 +97,13 @@ void BlendingWindow::update(ESContext *esContext, float deltaTime) {
     if(isLeftPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->moveByDirection(ESCamera::FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessKeyboard(RIGHT, deltaTime);
+            camera->moveByDirection(ESCamera::RIGHT, deltaTime);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessKeyboard(BACKWARD, deltaTime);
+            camera->moveByDirection(ESCamera::BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(LEFT, deltaTime);
+            camera->moveByDirection(ESCamera::LEFT, deltaTime);
         }
     }
 
@@ -111,13 +111,13 @@ void BlendingWindow::update(ESContext *esContext, float deltaTime) {
     if(isRightPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessMouseMovement(0, factor);
+            camera->rotate(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessMouseMovement(factor, 0);
+            camera->rotate(factor, 0);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessMouseMovement(0, -factor);
+            camera->rotate(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessMouseMovement(-factor, 0);
+            camera->rotate(-factor, 0);
         }
     }
 
@@ -134,7 +134,7 @@ void BlendingWindow::render(ESContext *esContext) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     model = mat4(1.0f);
-    view = camera->GetViewMatrix();
+    view = camera->getViewMatrix();
 
     // We omit the glActiveTexture part since TEXTURE0 is already the default active texture unit.
     //(a single sampler used in fragment is set to 0 as well by default)

@@ -8,18 +8,22 @@ using std::endl;
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-GLubyte* STBLoader::load(const char *filename, GLint &width,
-        GLint &height, GLint &channels, GLint req_comp, int fOpenMode, GLboolean needFlip) {
+GLubyte* STBLoader::load(const char *filename, GLint &width, GLint &height, int force_channels, unsigned int flags) {
 
+    int channels;
     FILE *pFile = NULL;
 
+    int fileOpenMode = ESFileWrapper::FOPEN_DEFAULT_MODE;
+    if (flags & FLAG_FOPEN_ABSOULT){
+        fileOpenMode = ESFileWrapper::FOPEN_ABSOLUTE_MODE;
+    }
     //http://www.50ply.com/blog/2013/01/19/loading-compressed-android-assets-with-file-pointer/
-    pFile = ESFileWrapper::esFopen(filename, "r", fOpenMode);
+    pFile = ESFileWrapper::esFopen(filename, "r", fileOpenMode);
 
-    GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, req_comp);
+    GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, force_channels);
     fclose(pFile);
 
-    if (needFlip) {
+    if (flags & FLAG_INVERT_Y) {
         //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
         GLubyte *nBuffer = flipImage(buffer, width, height, channels);
         delete[] buffer;
@@ -29,9 +33,9 @@ GLubyte* STBLoader::load(const char *filename, GLint &width,
     }
 }
 
-GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint &chennels, GLboolean alpha, int fOpenMode) {
+GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, int force_channels, unsigned int flags) {
 
-    GLubyte * data = STBLoader::load(fName, width, height, chennels, alpha ? 4 : 3, fOpenMode, TRUE);
+    GLubyte *data = STBLoader::load(fName, width, height, force_channels, flags);
 
     if (data != NULL) {
         GLuint texID;
@@ -40,15 +44,19 @@ GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint
         glBindTexture(GL_TEXTURE_2D, texID);
         //This line hard code to GL_RGB, so 16 or 32 bit BMP (GL_RGBA mode)
         //is not ready for support
-        glTexImage2D(GL_TEXTURE_2D, 0,  alpha ? GL_RGBA : GL_RGB, width, height, 0, alpha ? GL_RGBA : GL_RGB,
-                GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0,  force_channels == CHANNEL_RGBA ? GL_RGBA : GL_RGB,
+                width, height, 0,force_channels == CHANNEL_RGBA ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
         // Set our texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_CLAMP_TO_EDGE : GL_REPEAT );
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, alpha ? GL_CLAMP_TO_EDGE : GL_REPEAT );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, force_channels == CHANNEL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, force_channels == CHANNEL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT );
         // Set texture filtering
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        if (flags & FLAG_MIPMAPS) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        } else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
         // Unbind texture when done, so we won't accidentily mess up our texture.
         glBindTexture(GL_TEXTURE_2D, 0);
         delete[] data;
@@ -59,21 +67,21 @@ GLuint STBLoader::loadTex(const char* fName, GLint & width, GLint &height, GLint
     return 0;
 }
 
-GLuint STBLoader::loadTex(const char* fName, GLboolean alpha, int fOpenMode) {
-    GLint w, h, c;
-    return STBLoader::loadTex(fName, w, h, c, alpha, fOpenMode);
+GLuint STBLoader::loadTex( const char * fileName, int force_channels, unsigned int flags) {
+    GLint w, h;
+    return STBLoader::loadTex(fileName, w, h, force_channels, flags);
 }
 
-GLuint STBLoader::loadCubemap(vector<const GLchar*> faces) {
+GLuint STBLoader::loadCubemap(vector<const GLchar*> faces, int force_channels, unsigned int flags) {
     GLuint textureID;
     glGenTextures(1, &textureID);
 
-    GLint width, height, chennels;
+    GLint width, height;
     GLubyte* image;
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     for(GLuint i = 0; i < faces.size(); i++) {
-        image = STBLoader::load(faces[i], width, height, chennels, 3, ESFileWrapper::FOPEN_DEFAULT_MODE, FALSE);
+        image = STBLoader::load(faces[i], width, height, force_channels, flags);
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
         delete[] image;
     }
@@ -87,7 +95,6 @@ GLuint STBLoader::loadCubemap(vector<const GLchar*> faces) {
     return textureID;
 }
 
-
 GLubyte *STBLoader::flipImage(GLubyte *data, GLint width, GLint height, GLint channels) {
     /*  create a copy the image data    */
     GLubyte *img = (GLubyte *)malloc( width*height*channels );
@@ -98,8 +105,7 @@ GLubyte *STBLoader::flipImage(GLubyte *data, GLint width, GLint height, GLint ch
     {
         int index1 = j * width * channels;
         int index2 = (height - 1 - j) * width * channels;
-        for( i = width * channels; i > 0; --i )
-        {
+        for( i = width * channels; i > 0; --i ) {
             GLubyte temp = img[index1];
             img[index1] = img[index2];
             img[index2] = temp;

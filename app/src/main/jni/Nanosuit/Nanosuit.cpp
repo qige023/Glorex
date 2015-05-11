@@ -55,7 +55,7 @@ void Nanosuit::initScene(ESContext *esContext) {
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
     camera = new ESCamera(glm::vec3(0.0f, 1.0f, 5.0f));
-    view = camera->GetViewMatrix();
+    view = camera->getViewMatrix();
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(camera->Zoom), (float) esContext->width / esContext->height,
@@ -72,13 +72,13 @@ void Nanosuit::update(ESContext *esContext, float deltaTime) {
     if(isLeftPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->moveByDirection(ESCamera::FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessKeyboard(RIGHT, deltaTime);
+            camera->moveByDirection(ESCamera::RIGHT, deltaTime);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessKeyboard(BACKWARD, deltaTime);
+            camera->moveByDirection(ESCamera::BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(LEFT, deltaTime);
+            camera->moveByDirection(ESCamera::LEFT, deltaTime);
         }
     }
 
@@ -86,13 +86,13 @@ void Nanosuit::update(ESContext *esContext, float deltaTime) {
     if(isRightPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessMouseMovement(0, factor);
+            camera->rotate(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessMouseMovement(factor, 0);
+            camera->rotate(factor, 0);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessMouseMovement(0, -factor);
+            camera->rotate(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessMouseMovement(-factor, 0);
+            camera->rotate(-factor, 0);
         }
     }
 }
@@ -101,7 +101,7 @@ void Nanosuit::render(ESContext *esContext) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    view = camera->GetViewMatrix();
+    view = camera->getViewMatrix();
 
     setMatrices();
 

@@ -1,47 +1,49 @@
 #pragma once
-
 // Std. Includes
 #include <vector>
 
 // GL Includes
-#include <esutil.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
-enum ESCamera_Movement {
-    FORWARD, BACKWARD, LEFT, RIGHT
-};
-
-// Default camera values
-const GLfloat YAW = -90.0f;
-const GLfloat PITCH = 0.0f;
-const GLfloat SPEED = 3.0f;
-const GLfloat SENSITIVTY = 0.75f; //0.25f
-const GLfloat ZOOM = 45.0f;
+#include <esutil.h>
 
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
 class ESCamera {
 public:
+    // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
+    enum Movement {
+        FORWARD, BACKWARD, LEFT, RIGHT
+    };
+
+    // Default camera values
+    static const GLfloat YAW = -90.0f;
+    static const GLfloat PITCH = 0.0f;
+    static const GLfloat SPEED = 3.0f;
+    static const GLfloat SENSITIVTY = 0.75f; //0.25f
+    static const GLfloat ZOOM = 45.0f;
+
     // Camera Attributes
     glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
+
     // Eular Angles
     GLfloat Yaw;
     GLfloat Pitch;
+
     // Camera options
     GLfloat MovementSpeed;
-    GLfloat MouseSensitivity;
+    GLfloat RotateSensitivity;
     GLfloat Zoom;
 
     // Constructor with vectors
     ESCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up =
             glm::vec3(0.0f, 1.0f, 0.0f), GLfloat yaw = YAW, GLfloat pitch =
             PITCH) :
-            Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(
+            Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), RotateSensitivity(
                     SENSITIVTY), Zoom(ZOOM) {
         this->Position = position;
         this->WorldUp = up;
@@ -52,7 +54,7 @@ public:
     // Constructor with scalar values
     ESCamera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat upY,
             GLfloat upZ, GLfloat yaw, GLfloat pitch) :
-            Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(
+            Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), RotateSensitivity(
                     SENSITIVTY), Zoom(ZOOM) {
         this->Position = glm::vec3(posX, posY, posZ);
         this->WorldUp = glm::vec3(upX, upY, upZ);
@@ -62,13 +64,11 @@ public:
     }
 
     // Returns the view matrix calculated using Eular Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix() {
-        return glm::lookAt(this->Position, this->Position + this->Front,
-                this->Up);
+    glm::mat4 getViewMatrix() {
+        return glm::lookAt(this->Position, this->Position + this->Front, this->Up);
     }
 
-    // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(ESCamera_Movement direction, GLfloat deltaTime) {
+    void moveByDirection(Movement direction, GLfloat deltaTime) {
         GLfloat velocity = this->MovementSpeed * deltaTime;
         if (direction == FORWARD)
             this->Position += this->Front * velocity;
@@ -81,10 +81,10 @@ public:
     }
 
     // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset,
+    void rotate(GLfloat xoffset, GLfloat yoffset,
             GLboolean constrainPitch = true) {
-        xoffset *= this->MouseSensitivity;
-        yoffset *= this->MouseSensitivity;
+        xoffset *= this->RotateSensitivity;
+        yoffset *= this->RotateSensitivity;
 
         this->Yaw += xoffset;
         this->Pitch += yoffset;
@@ -101,8 +101,7 @@ public:
         this->updateCameraVectors();
     }
 
-    // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void ProcessMouseScroll(GLfloat yoffset) {
+    void zoomInOut(GLfloat yoffset) {
         if (this->Zoom >= 1.0f && this->Zoom <= 45.0f)
             this->Zoom -= yoffset;
         if (this->Zoom <= 1.0f)

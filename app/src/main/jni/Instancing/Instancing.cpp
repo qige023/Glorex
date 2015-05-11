@@ -67,8 +67,7 @@ void Instancing::initScene(ESContext *esContext) {
     cube = new VBOCube(1.0f);
 
     // Load texture file
-    const char *texName = "media/texture/crate.bmp";
-    texId = STBLoader::loadTex(texName);
+    texId = STBLoader::loadTex("media/texture/crate.bmp");
 
     view = mat4(1.0f);
     view *= glm::lookAt(vec3(0.0f,0.0f,10.0f), vec3(0.0f,0.0f,0.0f), vec3(0.0f,1.0f,0.0f));

@@ -66,7 +66,7 @@ void Cubemap::initScene(ESContext *esContext) {
     cout << "Model Matrix" << glm::to_string(model) << endl;
 
     // Remove any translation component of the view matrix;
-    view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
+    view = glm::mat4(glm::mat3(camera->getViewMatrix()));
     cout << "View Matrix" << glm::to_string(view) << endl;
 
     projection = glm::perspective(glm::radians(camera->Zoom),
@@ -81,13 +81,13 @@ void Cubemap::update(ESContext *esContext, float deltaTime) {
     if(isLeftPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessKeyboard(FORWARD, deltaTime);
+            camera->moveByDirection(ESCamera::FORWARD, deltaTime);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessKeyboard(RIGHT, deltaTime);
+            camera->moveByDirection(ESCamera::RIGHT, deltaTime);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessKeyboard(BACKWARD, deltaTime);
+            camera->moveByDirection(ESCamera::BACKWARD, deltaTime);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessKeyboard(LEFT, deltaTime);
+            camera->moveByDirection(ESCamera::LEFT, deltaTime);
         }
     }
 
@@ -95,13 +95,13 @@ void Cubemap::update(ESContext *esContext, float deltaTime) {
     if(isRightPanelActive == TRUE) {
         degree = ES_TO_DEGREES(angle);
         if(degree > 45.0f && degree <= 135.0f) {
-            camera->ProcessMouseMovement(0, factor);
+            camera->rotate(0, factor);
         } else if(degree > 135.0f || degree <= -135.0f) {
-            camera->ProcessMouseMovement(factor, 0);
+            camera->rotate(factor, 0);
         } else if(degree > -135.0f && degree <= -45.0f) {
-            camera->ProcessMouseMovement(0, -factor);
+            camera->rotate(0, -factor);
         } else if(degree > -45.0f && degree <= 45.0f) {
-            camera->ProcessMouseMovement(-factor, 0);
+            camera->rotate(-factor, 0);
         }
     }
 }
@@ -116,7 +116,7 @@ void Cubemap::render(ESContext *esContext) {
     glActiveTexture(GL_TEXTURE0);
     prog.setUniform("skybox", 0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
-    view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
+    view = glm::mat4(glm::mat3(camera->getViewMatrix()));
     setMatrices();
     skybox->render();
     glDepthMask(GL_TRUE);

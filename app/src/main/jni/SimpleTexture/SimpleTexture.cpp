@@ -1,21 +1,22 @@
 #include "SimpleTexture.h"
-#include "esutil.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-
-#include "loader/stbloader.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
-using glm::vec3;
-using glm::vec4;
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+using glm::vec3;
+using glm::vec4;
+
+#include "esutil.h"
+#include "loader/stbloader.h"
 
 SimpleTexture::SimpleTexture() {
 }
@@ -41,11 +42,8 @@ void SimpleTexture::initScene(ESContext *esContext) {
     cube = new VBOCube(1.0f);
 
     // Load texture file
-    const char *texName1 = "media/texture/crate.bmp";
-    texId1 = STBLoader::loadTex(texName1);
-
-    const char *texName2 = "media/texture/awesomeface.png";
-    texId2 = STBLoader::loadTex(texName2);
+    texId1 = STBLoader::loadTex("media/texture/crate.bmp");
+    texId2 = STBLoader::loadTex("media/texture/awesomeface.png");
 
     model = mat4(1.0f);
     model *= glm::rotate(glm::radians(angle), vec3(0.0f,1.0f,1.0f));

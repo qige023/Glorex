@@ -2,14 +2,10 @@
 // Std. Includes
 #include <string>
 #include <iostream>
-#include <map>
 #include <vector>
-using namespace std;
-
-#include "esutil.h"
-#include "esfile.h"
-#include "esprogram.h"
-#include "loader/stbloader.h"
+using std::cout;
+using std::endl;
+using std::vector;
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,7 +13,12 @@ using namespace std;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <esmesh.h>
+
+#include "esutil.h"
+#include "esfile.h"
+#include "esmesh.h"
+#include "esprogram.h"
+#include "loader/stbloader.h"
 
 class ESModel {
 public:
@@ -169,7 +170,8 @@ private:
                 //http://stackoverflow.com/a/16502000
                 //string str = "some string" ;
                 //char *cstr = &str[0u];
-                texture.id =  STBLoader::loadTex( &filename[0u], false, ESFileWrapper::FOPEN_ABSOLUTE_MODE);
+                texture.id =  STBLoader::loadTex( &filename[0u], STBLoader::CHANNEL_RGB,
+                        STBLoader::FLAG_FOPEN_ABSOULT | STBLoader::FLAG_MIPMAPS | STBLoader::FLAG_INVERT_Y);
                 texture.type = typeName;
                 texture.path = str;
                 textures.push_back(texture);
