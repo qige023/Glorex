@@ -27,6 +27,8 @@ public:
     vector<Mesh> meshes;
     string directory;
 
+    static const aiPostProcessSteps AI_POST_PROCESSING_FLAGS = aiProcess_Triangulate | aiProcess_FlipUVs;
+
     /*  Functions   */
     // Constructor, expects a filepath to a 3D model.
     ESModel(ESContext *esContext, string path) {
@@ -46,8 +48,8 @@ private:
         // Read file via ASSIMP
         Assimp::Importer* importer = new Assimp::Importer();
 
-        const aiScene* scene = importer->ReadFile(path,
-                aiProcess_Triangulate | aiProcess_FlipUVs);
+        // http://assimp.sourceforge.net/lib_html/postprocess_8h.html
+        const aiScene* scene = importer->ReadFile(path, AI_POST_PROCESSING_FLAGS);
         // Check for errors
         if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE
                 || !scene->mRootNode) // if is Not Zero
@@ -171,7 +173,7 @@ private:
                 //string str = "some string" ;
                 //char *cstr = &str[0u];
                 texture.id =  STBLoader::loadTex( &filename[0u], STBLoader::CHANNEL_RGB,
-                        STBLoader::FLAG_FOPEN_ABSOULT | STBLoader::FLAG_MIPMAPS | STBLoader::FLAG_INVERT_Y);
+                        STBLoader::FLAG_FOPEN_ABSOULT | STBLoader::FLAG_MIPMAPS);
                 texture.type = typeName;
                 texture.path = str;
                 textures.push_back(texture);

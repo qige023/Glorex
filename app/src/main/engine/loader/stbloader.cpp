@@ -23,8 +23,14 @@ GLubyte* STBLoader::load(const char *filename, GLint &width, GLint &height, int 
     GLubyte *buffer = stbi_load_from_file(pFile, &width, &height, &channels, force_channels);
     fclose(pFile);
 
+    // It has to do with OpenGL texture coordinates and the origin (0,0) of the image.
+    // OpenGL treats the origin of a texture as the lower left corner, whereas most graphics
+    // programs that you work with treat the origin as the upper left corner. While most file
+    // formats support both origin types (upper left and lower left), some formats commonly
+    // use one type over the other.
+    // Notice that BMP start at lower left, the same as GL does, but it has been flip
+    // by stb_image automatically. So basically we should flip all of the image except for cubemaps.
     if (flags & FLAG_INVERT_Y) {
-        //http://stackoverflow.com/questions/8346115/why-are-bmps-stored-upside-down
         GLubyte *nBuffer = flipImage(buffer, width, height, channels);
         delete[] buffer;
         return nBuffer;

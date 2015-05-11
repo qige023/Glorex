@@ -20,7 +20,7 @@ protected:
 public:
 
     VBOShape(GLfloat *vertexArray, GLsizei vertexLength, GLuint *vertexIndex, GLsizei vertexIndexLength,
-            bool enableNormal, bool enableTexcoord, bool enableTexcolorr, GLenum nusage = GL_STATIC_DRAW);
+            bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLenum nusage = GL_STATIC_DRAW);
 
     VBOShape(GLfloat *vertexArray, GLsizei vertexLength,
                 bool enableNormal, bool enableTexcoord, bool enableTexcolor, GLenum nusage = GL_STATIC_DRAW);
