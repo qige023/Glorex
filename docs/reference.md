@@ -101,6 +101,10 @@ code/libassimp.so: code/libassimp.so.3.1.1
     get include files in your install directory or just paste from assimp source include folders is OK
 ```
 
+## Skeletal Animation ##
+
+[Skeletal Animation ussing ASSIMP and GLSL: bone uniform array size](http://stackoverflow.com/questions/20803441/skeletal-animation-ussing-assimp-and-glsl-bone-uniform-array-size)
+
 ## C++ ##
 [C++ callback for non-static function between different classes](http://stackoverflow.com/questions/11522422/c-callback-for-non-static-function-between-different-classes?rq=1)
 

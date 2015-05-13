@@ -41,4 +41,16 @@
 /// esCreateWindow flat - multi-sample buffer
 #define ES_WINDOW_MULTISAMPLE   8
 
+///
+//  UtilsFunc
+//
+#define ES_ZERO_MEM(a) memset(a, 0, sizeof(a))
+#define ES_ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+
+///
+// Configs
+//
+// max num of bones which can affect per vertex
+#define ES_NUM_BONES_PER_VEREX 4
+
 #endif // ESDEF_H
