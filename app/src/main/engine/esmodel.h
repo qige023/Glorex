@@ -13,6 +13,7 @@ using std::vector;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/matrix4x4.h>
 
 #include "esutil.h"
 #include "esfile.h"
@@ -22,12 +23,7 @@ using std::vector;
 
 class ESModel {
 public:
-    /*  Model Data */
-    vector<Texture> textures_loaded;// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh> meshes;
-    string directory;
-
-    static const aiPostProcessSteps AI_POST_PROCESSING_FLAGS = aiProcess_Triangulate | aiProcess_FlipUVs;
+    static const int AI_POST_PROCESSING_FLAGS = aiProcess_Triangulate | aiProcess_FlipUVs;
 
     /*  Functions   */
     // Constructor, expects a filepath to a 3D model.
@@ -42,6 +38,13 @@ public:
     }
 
 private:
+    /*  Model Data */
+    vector<ESTexture> textures_loaded;// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    vector<ESMesh> meshes;
+    string directory;
+
+    aiMatrix4x4t<float> globalInverseTransform;
+
     /*  Functions   */
     // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(ESContext *esContext, string path) {
@@ -52,11 +55,11 @@ private:
         const aiScene* scene = importer->ReadFile(path, AI_POST_PROCESSING_FLAGS);
         // Check for errors
         if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE
-                || !scene->mRootNode) // if is Not Zero
-                {
+                || !scene->mRootNode) {                     // if is Not Zero
             cout << "ERROR::ASSIMP:: " << importer->GetErrorString() << endl;
             return;
         }
+        this->globalInverseTransform = scene->mRootNode->mTransformation.Inverse();
         // Retrieve the directory path of the filepath
         this->directory = path.substr(0, path.find_last_of('/'));
 
@@ -80,15 +83,21 @@ private:
 
     }
 
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene) {
+    ESMesh processMesh(aiMesh* mesh, const aiScene* scene) {
         // Data to fill
-        vector<Vertex> vertices;
+        vector<ESVertex> vertices;
         vector<GLuint> indices;
-        vector<Texture> textures;
+        vector<ESTexture> textures;
+        vector<ESVertexBoneData> vertexBoneDatas;
+        vector<ESBone> bones;
+
+        unsigned int numVertices = mesh->mNumVertices;
+        // init this vector specifically, where it empty or not, it will load in the memory.
+        vertexBoneDatas.resize(numVertices);
 
         // Walk through each of the mesh's vertices
         for (GLuint i = 0; i < mesh->mNumVertices; i++) {
-            Vertex vertex;
+            ESVertex vertex;
             glm::vec3 vector; // We declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
             // Positions
             vector.x = mesh->mVertices[i].x;
@@ -131,26 +140,28 @@ private:
             // Normal: texture_normalN
 
             // 1. Diffuse maps
-            vector<Texture> diffuseMaps = this->loadMaterialTextures(material,
+            vector<ESTexture> diffuseMaps = this->loadMaterialTextures(material,
                     aiTextureType_DIFFUSE, "texture_diffuse");
             textures.insert(textures.end(), diffuseMaps.begin(),
                     diffuseMaps.end());
             // 2. Specular maps
-            vector<Texture> specularMaps = this->loadMaterialTextures(material,
+            vector<ESTexture> specularMaps = this->loadMaterialTextures(material,
                     aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(),
                     specularMaps.end());
         }
 
+        loadBones(mesh, bones, vertexBoneDatas);
+
         // Return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures);
+        return ESMesh(vertices, indices, textures, bones, vertexBoneDatas);
     }
 
     // Checks all material textures of a given type and loads the textures if they're not loaded yet.
     // The required info is returned as a Texture struct.
-    vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
+    vector<ESTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
             string typeName) {
-        vector<Texture> textures;
+        vector<ESTexture> textures;
         for (GLuint i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;
             mat->GetTexture(type, i, &str);
@@ -164,7 +175,7 @@ private:
                 }
             }
             if (!skip) {   // If texture hasn't been loaded already, load it
-                Texture texture;
+                ESTexture texture;
 
                 string filename = str.C_Str();
                 filename = directory + '/' + filename;
@@ -182,4 +193,36 @@ private:
         }
         return textures;
     }
+
+    void loadBones(const aiMesh* pMesh, vector<ESBone>& bones, vector<ESVertexBoneData>& vertexBoneDatas) {
+
+        for (uint i = 0 ; i < pMesh->mNumBones ; i++) {
+            uint boneIndex = 0;
+            string boneName(pMesh->mBones[i]->mName.data);
+
+            ESboolean bFind = FALSE;
+            for(vector<ESBone>::size_type index = 0; index != bones.size(); index++) {
+                if(bones[index].boneName == boneName) {
+                    boneIndex = index;
+                    bFind = TRUE;
+                }
+            }
+
+            if (bFind == FALSE) {
+                // Allocate an index for a new bone
+                boneIndex = bones.size();
+                ESBone bone;
+                bone.boneName = boneName;
+                bone.boneOffset = pMesh->mBones[i]->mOffsetMatrix;
+                bones[boneIndex] = bone;
+            }
+
+            for (uint j = 0 ; j < pMesh->mBones[i]->mNumWeights ; j++) {
+                uint vertexID = pMesh->mBones[i]->mWeights[j].mVertexId;
+                float weight  = pMesh->mBones[i]->mWeights[j].mWeight;
+                vertexBoneDatas[vertexID].addBoneData(boneIndex, weight);
+            }
+        }
+    }
+
 };
