@@ -278,4 +278,3 @@ private:
         Out = Start + Factor * Delta;
     }
 };
-
